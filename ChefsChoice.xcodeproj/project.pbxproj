@@ -12,6 +12,7 @@
 		80C5987329ABF988007D1518 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 80C5987229ABF988007D1518 /* Assets.xcassets */; };
 		80C5987629ABF988007D1518 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 80C5987429ABF988007D1518 /* LaunchScreen.storyboard */; };
 		80C5988129ABFB57007D1518 /* ApiKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C5988029ABFB57007D1518 /* ApiKey.swift */; };
+		80C5988329ABFCD7007D1518 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 80C5988229ABFCD7007D1518 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		80C5987529ABF988007D1518 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		80C5987729ABF988007D1518 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		80C5988029ABFB57007D1518 /* ApiKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiKey.swift; sourceTree = "<group>"; };
+		80C5988229ABFCD7007D1518 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +40,7 @@
 		80C5985D29ABF987007D1518 = {
 			isa = PBXGroup;
 			children = (
+				80C5988229ABFCD7007D1518 /* README.md */,
 				80C5986829ABF987007D1518 /* ChefsChoice */,
 				80C5986729ABF987007D1518 /* Products */,
 			);
@@ -146,6 +149,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80C5988329ABFCD7007D1518 /* README.md in Resources */,
 				80C5987629ABF988007D1518 /* LaunchScreen.storyboard in Resources */,
 				80C5987329ABF988007D1518 /* Assets.xcassets in Resources */,
 			);
@@ -302,6 +306,7 @@
 				DEVELOPMENT_TEAM = team5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChefsChoice/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Chef's Choise";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -333,6 +338,7 @@
 				DEVELOPMENT_TEAM = team5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChefsChoice/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Chef's Choise";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
