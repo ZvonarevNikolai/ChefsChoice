@@ -97,6 +97,13 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		80682F4E29AD042F00640388 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		80C5985D29ABF987007D1518 = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +127,7 @@
 				80C5987D29ABFA60007D1518 /* App */,
 				80682F4829AD010900640388 /* API Client */,
 				80682F4929AD014200640388 /* Services */,
+				80682F4E29AD042F00640388 /* Models */,
 				80682F4329AD00AE00640388 /* Modules */,
 				80C5987E29ABFA76007D1518 /* Resources */,
 			);
