@@ -372,7 +372,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = "#team5";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChefsChoice/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chef's Choise";
@@ -406,7 +406,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = "#team5";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChefsChoice/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chef's Choise";
