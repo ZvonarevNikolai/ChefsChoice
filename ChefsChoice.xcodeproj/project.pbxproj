@@ -11,7 +11,6 @@
 		80C5986E29ABF987007D1518 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C5986D29ABF987007D1518 /* MainTabBarController.swift */; };
 		80C5987329ABF988007D1518 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 80C5987229ABF988007D1518 /* Assets.xcassets */; };
 		80C5987629ABF988007D1518 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 80C5987429ABF988007D1518 /* LaunchScreen.storyboard */; };
-		80C5988129ABFB57007D1518 /* ApiKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C5988029ABFB57007D1518 /* ApiKey.swift */; };
 		80C5988329ABFCD7007D1518 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 80C5988229ABFCD7007D1518 /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -22,7 +21,6 @@
 		80C5987229ABF988007D1518 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		80C5987529ABF988007D1518 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		80C5987729ABF988007D1518 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		80C5988029ABFB57007D1518 /* ApiKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiKey.swift; sourceTree = "<group>"; };
 		80C5988229ABFCD7007D1518 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -37,6 +35,68 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		80682F4129AD009000640388 /* OnboardingModule */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = OnboardingModule;
+			sourceTree = "<group>";
+		};
+		80682F4329AD00AE00640388 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				80C5987F29ABFABC007D1518 /* MainTabBarModule */,
+				80682F4129AD009000640388 /* OnboardingModule */,
+				80682F4729AD00F700640388 /* DetailModule */,
+				80682F4429AD00C000640388 /* RecipesModule */,
+				80682F4529AD00DB00640388 /* SearchModule */,
+				80682F4629AD00EE00640388 /* FavoriteModule */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		80682F4429AD00C000640388 /* RecipesModule */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = RecipesModule;
+			sourceTree = "<group>";
+		};
+		80682F4529AD00DB00640388 /* SearchModule */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SearchModule;
+			sourceTree = "<group>";
+		};
+		80682F4629AD00EE00640388 /* FavoriteModule */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = FavoriteModule;
+			sourceTree = "<group>";
+		};
+		80682F4729AD00F700640388 /* DetailModule */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DetailModule;
+			sourceTree = "<group>";
+		};
+		80682F4829AD010900640388 /* API Client */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "API Client";
+			sourceTree = "<group>";
+		};
+		80682F4929AD014200640388 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		80C5985D29ABF987007D1518 = {
 			isa = PBXGroup;
 			children = (
@@ -58,7 +118,9 @@
 			isa = PBXGroup;
 			children = (
 				80C5987D29ABFA60007D1518 /* App */,
-				80C5987F29ABFABC007D1518 /* MainTabBarModule */,
+				80682F4829AD010900640388 /* API Client */,
+				80682F4929AD014200640388 /* Services */,
+				80682F4329AD00AE00640388 /* Modules */,
 				80C5987E29ABFA76007D1518 /* Resources */,
 			);
 			path = ChefsChoice;
@@ -78,7 +140,6 @@
 			children = (
 				80C5987229ABF988007D1518 /* Assets.xcassets */,
 				80C5987729ABF988007D1518 /* Info.plist */,
-				80C5988029ABFB57007D1518 /* ApiKey.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -163,7 +224,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				80C5986E29ABF987007D1518 /* MainTabBarController.swift in Sources */,
-				80C5988129ABFB57007D1518 /* ApiKey.swift in Sources */,
 				80C5986A29ABF987007D1518 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
