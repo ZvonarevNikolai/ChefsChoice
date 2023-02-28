@@ -1,0 +1,34 @@
+//
+//  RecipeModel.swift
+//  ChefsChoice
+//
+//  Created by Андрей Фроленков on 28.02.23.
+//
+
+import Foundation
+
+struct Recipes {
+    
+    private let results: [RecipeModel]
+    
+    init(results: [RecipeModel]) {
+        self.results = results
+    }
+    
+    func getRecipes() -> [RecipeModel] {
+        
+        return results
+    }
+    
+}
+
+struct RecipeModel {
+    
+    let id: Int
+    let title: String
+    let image: String
+    let preparationMinutes: Int
+    let cookingMinutes: Int
+    let veryHealthy: Bool
+    let aggregateLikes: Int
+}
