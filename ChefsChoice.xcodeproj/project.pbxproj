@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28C5C5E329ADC5BA00AAE23B /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C5C5E229ADC5BA00AAE23B /* FavoriteViewController.swift */; };
+		28C5C5E629ADCBD700AAE23B /* CellForFavorite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C5C5E529ADCBD700AAE23B /* CellForFavorite.swift */; };
+		28C5C60F29ADF76200AAE23B /* ChefsChoice.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 28C5C60D29ADF76100AAE23B /* ChefsChoice.xcdatamodeld */; };
+		28C5C61029ADF7C200AAE23B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28C5C5E829ADF0F400AAE23B /* CoreData.framework */; };
 		52C927AC29AD6ED8003B3CD4 /* RecipesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C927AB29AD6ED8003B3CD4 /* RecipesManager.swift */; };
 		52C927AE29AD6EF4003B3CD4 /* RecipesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C927AD29AD6EF4003B3CD4 /* RecipesData.swift */; };
 		52C927B029AD6F07003B3CD4 /* RecipeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C927AF29AD6F07003B3CD4 /* RecipeModel.swift */; };
@@ -18,6 +22,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		28C5C5E229ADC5BA00AAE23B /* FavoriteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
+		28C5C5E529ADCBD700AAE23B /* CellForFavorite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellForFavorite.swift; sourceTree = "<group>"; };
+		28C5C5E829ADF0F400AAE23B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		28C5C60E29ADF76100AAE23B /* ChefsChoice.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChefsChoice.xcdatamodel; sourceTree = "<group>"; };
 		52C927AB29AD6ED8003B3CD4 /* RecipesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesManager.swift; sourceTree = SOURCE_ROOT; };
 		52C927AD29AD6EF4003B3CD4 /* RecipesData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesData.swift; sourceTree = SOURCE_ROOT; };
 		52C927AF29AD6F07003B3CD4 /* RecipeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeModel.swift; sourceTree = SOURCE_ROOT; };
@@ -35,12 +43,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28C5C61029ADF7C200AAE23B /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		28C5C5E429ADC9FC00AAE23B /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				28C5C5E529ADCBD700AAE23B /* CellForFavorite.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		28C5C5E729ADF0F400AAE23B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				28C5C5E829ADF0F400AAE23B /* CoreData.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		80682F4129AD009000640388 /* OnboardingModule */ = {
 			isa = PBXGroup;
 			children = (
@@ -78,6 +103,8 @@
 		80682F4629AD00EE00640388 /* FavoriteModule */ = {
 			isa = PBXGroup;
 			children = (
+				28C5C5E429ADC9FC00AAE23B /* Cell */,
+				28C5C5E229ADC5BA00AAE23B /* FavoriteViewController.swift */,
 			);
 			path = FavoriteModule;
 			sourceTree = "<group>";
@@ -119,6 +146,7 @@
 				80C5988229ABFCD7007D1518 /* README.md */,
 				80C5986829ABF987007D1518 /* ChefsChoice */,
 				80C5986729ABF987007D1518 /* Products */,
+				28C5C5E729ADF0F400AAE23B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -157,6 +185,7 @@
 			children = (
 				80C5987229ABF988007D1518 /* Assets.xcassets */,
 				80C5987729ABF988007D1518 /* Info.plist */,
+				28C5C60D29ADF76100AAE23B /* ChefsChoice.xcdatamodeld */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -242,8 +271,11 @@
 			files = (
 				80C5986E29ABF987007D1518 /* MainTabBarController.swift in Sources */,
 				52C927AE29AD6EF4003B3CD4 /* RecipesData.swift in Sources */,
+				28C5C5E629ADCBD700AAE23B /* CellForFavorite.swift in Sources */,
 				52C927B029AD6F07003B3CD4 /* RecipeModel.swift in Sources */,
+				28C5C60F29ADF76200AAE23B /* ChefsChoice.xcdatamodeld in Sources */,
 				52C927AC29AD6ED8003B3CD4 /* RecipesManager.swift in Sources */,
+				28C5C5E329ADC5BA00AAE23B /* FavoriteViewController.swift in Sources */,
 				80C5986A29ABF987007D1518 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -466,6 +498,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		28C5C60D29ADF76100AAE23B /* ChefsChoice.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				28C5C60E29ADF76100AAE23B /* ChefsChoice.xcdatamodel */,
+			);
+			currentVersion = 28C5C60E29ADF76100AAE23B /* ChefsChoice.xcdatamodel */;
+			path = ChefsChoice.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 80C5985E29ABF987007D1518 /* Project object */;
 }
