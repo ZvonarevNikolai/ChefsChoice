@@ -37,7 +37,9 @@ final class RecipesViewController: UIViewController {
         collectionView.register(
             CategoryCollectionViewCell.self,
             forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier)
-        collectionView.register(RandomCollectionViewCell.self, forCellWithReuseIdentifier: "RandomCollectionViewCell")
+        collectionView.register(
+            RandomCollectionViewCell.self,
+            forCellWithReuseIdentifier: RandomCollectionViewCell.identifier)
         collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderSupplementaryView")
         collectionView.collectionViewLayout = createLayout()
     }
@@ -86,6 +88,7 @@ extension RecipesViewController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
             widthDimension: .fractionalWidth(0.9),
             heightDimension: .fractionalHeight(0.3)), subitems: [item])
+        group.contentInsets.bottom = 16
         
         let section = createLayoutSection(
             group: group, behavior: .groupPaging, interGroupSpacing: 5,
@@ -96,12 +99,24 @@ extension RecipesViewController {
     
     private func createCategorySection() -> NSCollectionLayoutSection {
         
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.3), heightDimension: .fractionalHeight(1)))
+        let item = NSCollectionLayoutItem(layoutSize: .init(
+            widthDimension: .absolute(80),
+            heightDimension: .absolute(100)))
         
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.1)), subitems: [item])
+        let sideInset = (collectionView.frame.width - (80 * 3)) / 2
         
-        let section = createLayoutSection(group: group, behavior: .none, interGroupSpacing: 10, supplementaryItems: [supplementaryHeaderItem()], contentInsets: false)
-        section.contentInsets = .init(top: 0, leading: 10, bottom: 0, trailing: 10)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(0.2)), subitems: [item])
+        group.contentInsets = NSDirectionalEdgeInsets(
+            top: 0, leading: sideInset, bottom: 0, trailing: sideInset)
+        
+        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(0)
+        let section = createLayoutSection(
+            group: group, behavior: .none, interGroupSpacing: 0,
+            supplementaryItems: [supplementaryHeaderItem()], contentInsets: true)
+        
+        section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
         return section
     }
     
@@ -109,9 +124,9 @@ extension RecipesViewController {
         
         let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
         
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalHeight(0.45)), subitems: [item])
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.6), heightDimension: .fractionalHeight(0.2)), subitems: [item])
         
-        let section = createLayoutSection(group: group, behavior: .continuous, interGroupSpacing: 10, supplementaryItems: [supplementaryHeaderItem()], contentInsets: false)
+        let section = createLayoutSection(group: group, behavior: .continuous, interGroupSpacing: 20, supplementaryItems: [supplementaryHeaderItem()], contentInsets: false)
         section.contentInsets = .init(top: 0, leading: 10, bottom: 0, trailing: 0)
         return section
     }
@@ -164,7 +179,9 @@ extension RecipesViewController: UICollectionViewDataSource {
             return cell
             
         case .random(let random):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RandomCollectionViewCell", for: indexPath) as? RandomCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RandomCollectionViewCell.identifier,
+                for: indexPath) as? RandomCollectionViewCell
             else {
                 return UICollectionViewCell()
             }
@@ -177,15 +194,17 @@ extension RecipesViewController: UICollectionViewDataSource {
         
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderSupplementaryView", for: indexPath) as! HeaderSupplementaryView
+            guard let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind, withReuseIdentifier: "HeaderSupplementaryView",
+                for: indexPath) as? HeaderSupplementaryView else {
+                return UICollectionReusableView()
+            }
             header.configureHeader(categoryName: sections[indexPath.section].title)
             return header
         default:
             return UICollectionReusableView()
         }
-        
     }
-    
 }
 
 //MARK: - Set Constraints

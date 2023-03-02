@@ -25,9 +25,6 @@ struct MockData {
                    .init(title: "Seafood", image: "seafood"),
                    .init(title: "Steak", image: "steak"),
                    .init(title: "Dessert", image: "cupcake"),
-                   .init(title: "TBD", image: "4693469"),
-                   .init(title: "TBD", image: "4693469"),
-                   .init(title: "TBD", image: "4693469")
                   ])
     }()
     
