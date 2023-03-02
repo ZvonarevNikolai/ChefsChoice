@@ -9,9 +9,11 @@ import UIKit
 
 class RandomCollectionViewCell: UICollectionViewCell {
     
+    static let identifier = "RandomCollectionViewCell"
+    
     private let randomRecipeImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.image = UIImage(named: "recipe1")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
