@@ -172,13 +172,6 @@
 			path = DetailModule;
 			sourceTree = "<group>";
 		};
-		80682F4929AD014200640388 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
 		806BBF8329B0C66F00243E32 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -216,7 +209,6 @@
 			isa = PBXGroup;
 			children = (
 				80C5987D29ABFA60007D1518 /* App */,
-				80682F4929AD014200640388 /* Services */,
 				2875FF4429B0996D0082D183 /* Models */,
 				2875FF4129B0995D0082D183 /* API Client */,
 				80682F4329AD00AE00640388 /* Modules */,

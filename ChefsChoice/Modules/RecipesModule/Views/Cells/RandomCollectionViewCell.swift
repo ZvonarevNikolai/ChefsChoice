@@ -32,7 +32,7 @@ class RandomCollectionViewCell: UICollectionViewCell {
     
     func setupView() {
         clipsToBounds = true
-        layer.cornerRadius = 10
+        layer.cornerRadius = 2
         addSubview(randomRecipeImageView)
     }
     

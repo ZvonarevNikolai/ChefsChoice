@@ -70,6 +70,7 @@ extension RecipesViewController {
         }
     }
     
+    // Random
     private func createLayoutSection(group: NSCollectionLayoutGroup, behavior: UICollectionLayoutSectionOrthogonalScrollingBehavior, interGroupSpacing: CGFloat, supplementaryItems: [NSCollectionLayoutBoundarySupplementaryItem], contentInsets: Bool) -> NSCollectionLayoutSection {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = behavior
@@ -79,6 +80,7 @@ extension RecipesViewController {
         return section
     }
     
+    // Popular
     private func createPopularSection() -> NSCollectionLayoutSection {
         
         let item = NSCollectionLayoutItem(layoutSize: .init(
@@ -97,6 +99,7 @@ extension RecipesViewController {
         return section
     }
     
+    // Category
     private func createCategorySection() -> NSCollectionLayoutSection {
         
         let item = NSCollectionLayoutItem(layoutSize: .init(
@@ -116,23 +119,36 @@ extension RecipesViewController {
             group: group, behavior: .none, interGroupSpacing: 0,
             supplementaryItems: [supplementaryHeaderItem()], contentInsets: true)
         
-        section.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
         return section
     }
     
+    // Random
     private func createRandomSection() -> NSCollectionLayoutSection {
         
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+        let item = NSCollectionLayoutItem(layoutSize: .init(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(1)))
+        item.contentInsets.bottom = 16
+        item.contentInsets.trailing = 2
         
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.6), heightDimension: .fractionalHeight(0.2)), subitems: [item])
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+            widthDimension: .fractionalWidth(0.8),
+            heightDimension: .fractionalHeight(0.4)), subitems: [item])
         
-        let section = createLayoutSection(group: group, behavior: .continuous, interGroupSpacing: 20, supplementaryItems: [supplementaryHeaderItem()], contentInsets: false)
+        let section = createLayoutSection(
+            group: group, behavior: .continuous, interGroupSpacing: 0,
+            supplementaryItems: [supplementaryHeaderItem()], contentInsets: false)
         section.contentInsets = .init(top: 0, leading: 10, bottom: 0, trailing: 0)
         return section
     }
     
+    // Header
     private func supplementaryHeaderItem() -> NSCollectionLayoutBoundarySupplementaryItem {
-        .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(30)), elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        .init(layoutSize: .init(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .estimated(20)),
+              elementKind: UICollectionView.elementKindSectionHeader,
+              alignment: .top)
     }
     
 }
@@ -147,6 +163,17 @@ extension RecipesViewController: UICollectionViewDelegate {
 
 extension RecipesViewController: UICollectionViewDataSource {
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        switch sections[indexPath.row] {
+//        case .popular(_):
+//            print(sections[indexPath.row].title)
+//        case .category(_):
+//            print("Open with category")
+//        case .random(_):
+//            print(sections[indexPath.row].title)
+//        }
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         sections.count
     }
@@ -154,7 +181,7 @@ extension RecipesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         sections[section].count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch sections[indexPath.section] {
             
