@@ -9,12 +9,24 @@ import UIKit
 
 class CellForFavorite: UITableViewCell {
     
+    private lazy var likesLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.textColor = .white
+        label.backgroundColor = .gray
+        label.alpha = 0.7
+        label.layer.masksToBounds = true
+        label.layer.cornerRadius = 6
+        label.textAlignment = .center
+        label.text = "Likes: 2034"
+        return label
+    }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.textColor = .black
         label.numberOfLines = 0
-        label.textAlignment = .center
         return label
     }()
     
@@ -48,8 +60,10 @@ class CellForFavorite: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         photoImageView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        likesLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(photoImageView)
         contentView.addSubview(stackView)
+        contentView.addSubview(likesLabel)
         
         setupConstraints()
     }
@@ -83,8 +97,12 @@ class CellForFavorite: UITableViewCell {
             
             stackView.leftAnchor.constraint(equalTo: photoImageView.leftAnchor, constant: 50),
             stackView.bottomAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -30),
-            stackView.rightAnchor.constraint(equalTo: photoImageView.rightAnchor, constant: -150)
+            stackView.rightAnchor.constraint(equalTo: photoImageView.rightAnchor, constant: -150),
             
+            likesLabel.leftAnchor.constraint(equalTo: photoImageView.leftAnchor, constant: 56),
+            likesLabel.topAnchor.constraint(equalTo: photoImageView.topAnchor, constant: 16),
+            likesLabel.widthAnchor.constraint(equalToConstant: 100),
+            likesLabel.heightAnchor.constraint(equalToConstant: 30)
         ])
     }
     
@@ -100,3 +118,4 @@ class CellForFavorite: UITableViewCell {
 //    }
 
 }
+

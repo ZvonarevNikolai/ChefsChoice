@@ -8,10 +8,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
-        //window.rootViewController = MainTabBarController()
-        window.rootViewController = FavoriteViewController()
+        window.rootViewController = MainTabBarController()
         window.makeKeyAndVisible()
         self.window = window
+        
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        FavoriteViewController().context = context
+        
         return true
     }
     
