@@ -7,11 +7,13 @@
 
 import UIKit
 
-class CategoryCollectionViewCell: UICollectionViewCell {
+final class CategoryCollectionViewCell: UICollectionViewCell {
+    
+    static let identifier = "CategoryCollectionViewCell"
     
     private let categoryImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.image = UIImage(named: "categoryRecipe")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -40,7 +42,6 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupView()
         setConstraints()
     }
@@ -49,8 +50,8 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been emplemented")
     }
     
-    func setupView() {
-        backgroundColor = #colorLiteral(red: 0.9342038631, green: 0.9539685845, blue: 0.9624658227, alpha: 1)
+    private func setupView() {
+        backgroundColor = .systemBackground
         layer.cornerRadius = 10
         addSubview(categoryLabel)
         addSubview(categoryImageView)
@@ -61,17 +62,25 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         categoryImageView.image = UIImage(named: imageName)
     }
     
-    func setConstraints() {
+    private func setConstraints() {
         NSLayoutConstraint.activate([
-            categoryLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
-            categoryLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
-            categoryLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
-            categoryLabel.heightAnchor.constraint(equalToConstant: 16),
+            categoryLabel.leadingAnchor.constraint(
+                equalTo: leadingAnchor, constant: 5),
+            categoryLabel.trailingAnchor.constraint(
+                equalTo: trailingAnchor, constant: -5),
+            categoryLabel.bottomAnchor.constraint(
+                equalTo: bottomAnchor, constant: -5),
+            categoryLabel.heightAnchor.constraint(
+                equalToConstant: 16),
             
-            categoryImageView.topAnchor.constraint(equalTo: topAnchor, constant: 5),
-            categoryImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
-            categoryImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
-            categoryImageView.bottomAnchor.constraint(equalTo: categoryLabel.topAnchor, constant: -5)
+            categoryImageView.topAnchor.constraint(
+                equalTo: topAnchor, constant: 5),
+            categoryImageView.leadingAnchor.constraint(
+                equalTo: leadingAnchor, constant: 5),
+            categoryImageView.trailingAnchor.constraint(
+                equalTo: trailingAnchor, constant: -5),
+            categoryImageView.bottomAnchor.constraint(
+                equalTo: categoryLabel.topAnchor, constant: -5)
         ])
     }
 }
