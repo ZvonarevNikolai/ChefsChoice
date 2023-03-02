@@ -7,31 +7,21 @@
 
 import UIKit
 
-class RecipesViewController: UIViewController {
+final class RecipesViewController: UIViewController {
     
     private let collectionView: UICollectionView = {
         let collectionViewLayout = UICollectionViewLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-        
-        collectionView.backgroundColor = .clear
+        let collectionView = UICollectionView(
+            frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.bounces = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
-    }()
-    
-    private let searchButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.backgroundColor = .clear
-        button.setBackgroundImage(UIImage(systemName: "magnifyingglass.circle"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
     }()
     
     private let sections = MockData.shared.pageData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupViews()
         setConstraints()
         setDelegates()
@@ -40,11 +30,13 @@ class RecipesViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .systemBackground
         title = "Chef's Choise"
-        
-        view.addSubview(searchButton)
         view.addSubview(collectionView)
-        collectionView.register(PopularCollectionViewCell.self, forCellWithReuseIdentifier: "PopularCollectionViewCell")
-        collectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCollectionViewCell")
+        collectionView.register(
+            PopularCollectionViewCell.self,
+            forCellWithReuseIdentifier: PopularCollectionViewCell.identifier)
+        collectionView.register(
+            CategoryCollectionViewCell.self,
+            forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier)
         collectionView.register(RandomCollectionViewCell.self, forCellWithReuseIdentifier: "RandomCollectionViewCell")
         collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderSupplementaryView")
         collectionView.collectionViewLayout = createLayout()
@@ -54,7 +46,6 @@ class RecipesViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
     }
-    
 }
 
 //MARK: - Create Layout
@@ -75,7 +66,6 @@ extension RecipesViewController {
                 return self.createRandomSection()
             }
         }
-        
     }
     
     private func createLayoutSection(group: NSCollectionLayoutGroup, behavior: UICollectionLayoutSectionOrthogonalScrollingBehavior, interGroupSpacing: CGFloat, supplementaryItems: [NSCollectionLayoutBoundarySupplementaryItem], contentInsets: Bool) -> NSCollectionLayoutSection {
@@ -89,12 +79,18 @@ extension RecipesViewController {
     
     private func createPopularSection() -> NSCollectionLayoutSection {
         
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+        let item = NSCollectionLayoutItem(layoutSize: .init(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(1)))
         
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalHeight(0.2)), subitems: [item])
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+            widthDimension: .fractionalWidth(0.9),
+            heightDimension: .fractionalHeight(0.3)), subitems: [item])
         
-        let section = createLayoutSection(group: group, behavior: .groupPaging, interGroupSpacing: 5, supplementaryItems: [supplementaryHeaderItem()], contentInsets: false)
-        section.contentInsets = .init(top: 0, leading: -10, bottom: 0, trailing: 0)
+        let section = createLayoutSection(
+            group: group, behavior: .groupPaging, interGroupSpacing: 5,
+            supplementaryItems: [supplementaryHeaderItem()], contentInsets: false)
+        section.contentInsets = .init(top: 0, leading: 10, bottom: 0, trailing: 0)
         return section
     }
     
@@ -148,19 +144,23 @@ extension RecipesViewController: UICollectionViewDataSource {
         switch sections[indexPath.section] {
             
         case .popular(let popular):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PopularCollectionViewCell", for: indexPath) as? PopularCollectionViewCell
-            else {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: PopularCollectionViewCell.identifier,
+                for: indexPath) as? PopularCollectionViewCell else {
                 return UICollectionViewCell()
             }
             cell.configureCell(imageName: popular[indexPath.row].image)
             return cell
             
         case .category(let category):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionViewCell", for: indexPath) as? CategoryCollectionViewCell
-            else {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: CategoryCollectionViewCell.identifier,
+                for: indexPath) as? CategoryCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.configureCell(categoryName: category[indexPath.row].title, imageName: category[indexPath.row].image)
+            
+            cell.configureCell(categoryName: category[indexPath.row].title,
+                               imageName: category[indexPath.row].image)
             return cell
             
         case .random(let random):
@@ -193,37 +193,12 @@ extension RecipesViewController: UICollectionViewDataSource {
 extension RecipesViewController {
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            searchButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            searchButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            searchButton.widthAnchor.constraint(equalToConstant: 50),
-            searchButton.heightAnchor.constraint(equalToConstant: 50),
-            
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            collectionView.bottomAnchor.constraint(equalTo: searchButton.topAnchor, constant: -10)
+            collectionView.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-    }
-}
-
-
-//MARK: - Preview
-
-import SwiftUI
-struct ListProvider: PreviewProvider {
-    static var previews: some View {
-        ContainerView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContainerView: UIViewControllerRepresentable {
-        
-        let listVC = RecipesViewController()
-        
-        func makeUIViewController(context: UIViewControllerRepresentableContext<ListProvider.ContainerView>) -> RecipesViewController {
-            return listVC
-        }
-        
-        func updateUIViewController(_ uiViewController: ListProvider.ContainerView.UIViewControllerType, context: UIViewControllerRepresentableContext<ListProvider.ContainerView>) {
-        }
     }
 }
