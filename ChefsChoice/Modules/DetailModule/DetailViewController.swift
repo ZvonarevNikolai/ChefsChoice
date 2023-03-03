@@ -2,12 +2,15 @@
 //  DetailViewController.swift
 //  ChefsChoice
 //
+
 //  Created by Дмитрий on 02.03.2023.
+
 //
 
 import UIKit
 
 class DetailViewController: UIViewController {
+
     
     var stepsModel: StepsModel!
     var testModel = StepsModel.steps
@@ -267,4 +270,5 @@ extension DetailViewController: UIScrollViewDelegate {
             scrollView.contentOffset.x = 0
         }
     }
+
 }
