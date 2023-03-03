@@ -28,7 +28,12 @@ struct RecipeModel {
     let title: String
     let image: String
     let preparationMinutes: Int
-    let cookingMinutes: Int
+    let readyInMinutes: Int
     let veryHealthy: Bool
     let aggregateLikes: Int
+    let servings: Int
+    let analyzedInstructions: [AnalyzedInstructions]
+    
 }
+
+
