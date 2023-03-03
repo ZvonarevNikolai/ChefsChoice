@@ -18,7 +18,15 @@ final class RecipesViewController: UIViewController {
         return collectionView
     }()
     
-    private let sections = MockData.shared.pageData
+    private var popularRecipes = [RecipeModel]()
+    private var categoryRecipes = [RecipeModel]()
+    private var randomRecipes = [RecipeModel]()
+    
+    private var sections: [SectionList] {
+        [.popular(popularRecipes),
+         .category(categoryRecipes),
+         .random(randomRecipes)]
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +48,10 @@ final class RecipesViewController: UIViewController {
         collectionView.register(
             RandomCollectionViewCell.self,
             forCellWithReuseIdentifier: RandomCollectionViewCell.identifier)
-        collectionView.register(HeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderSupplementaryView")
+        collectionView.register(
+            HeaderSupplementaryView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "HeaderSupplementaryView")
         collectionView.collectionViewLayout = createLayout()
     }
     
@@ -133,7 +144,7 @@ extension RecipesViewController {
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
             widthDimension: .fractionalWidth(0.8),
-            heightDimension: .fractionalHeight(0.4)), subitems: [item])
+            heightDimension: .fractionalHeight(0.3)), subitems: [item])
         
         let section = createLayoutSection(
             group: group, behavior: .continuous, interGroupSpacing: 0,

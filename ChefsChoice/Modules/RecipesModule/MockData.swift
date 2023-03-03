@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+/*
 struct MockData {
    
     static let shared = MockData()
@@ -39,3 +39,4 @@ struct MockData {
         [popular, category, random]
     }
 }
+*/

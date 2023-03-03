@@ -74,7 +74,6 @@ class CellForFavorite: UITableViewCell {
     
     func configure(_ recipeModel: RecipeModel) {
         titleLabel.text = recipeModel.title
-        cookingLabel.text = String(recipeModel.cookingMinutes)
         //photoImageView.image = recipeModel
     }
     
