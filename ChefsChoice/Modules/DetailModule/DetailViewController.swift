@@ -186,7 +186,7 @@ class DetailViewController: UIViewController {
                 let label = UILabel()
                 label.translatesAutoresizingMaskIntoConstraints = false
                 label.font = .systemFont(ofSize: 16, weight: .medium)
-                var textLabel = NSMutableAttributedString(string: "Step: \(step.stepNumber)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18, weight: .semibold)])
+                let textLabel = NSMutableAttributedString(string: "Step: \(step.stepNumber)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18, weight: .semibold)])
                 textLabel.append(NSMutableAttributedString(string: "\(step.stepInformation)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]))
                 textLabel.append(NSMutableAttributedString(string: "Ingredients: ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .semibold)]))
                 textLabel.append(NSMutableAttributedString(string: "\(step.ingredients[0].name)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]))
