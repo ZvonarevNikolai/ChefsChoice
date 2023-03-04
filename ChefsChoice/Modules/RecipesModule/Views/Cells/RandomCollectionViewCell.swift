@@ -36,8 +36,8 @@ class RandomCollectionViewCell: UICollectionViewCell {
         addSubview(randomRecipeImageView)
     }
     
-    func configureCell(imageName: String) {
-        randomRecipeImageView.image = UIImage(named: imageName)
+    func addImageToCell(image: UIImage) {
+        randomRecipeImageView.image = image
     }
     
     func setConstraints() {

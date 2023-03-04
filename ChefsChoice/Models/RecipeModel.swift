@@ -32,7 +32,7 @@ struct RecipeModel {
     let veryHealthy: Bool
     let aggregateLikes: Int
     let servings: Int
-    let analyzedInstructions: [AnalyzedInstructions]
+    let analyzedInstructions: [AnalyzedInstructions]?
     
 }
 

@@ -29,17 +29,6 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    override var isSelected: Bool {
-        didSet {
-            if isSelected {
-                layer.borderWidth = 2
-                layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-            } else {
-                layer.borderWidth = 0
-            }
-        }
-    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()

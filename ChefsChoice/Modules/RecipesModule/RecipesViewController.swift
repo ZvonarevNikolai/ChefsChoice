@@ -18,6 +18,8 @@ final class RecipesViewController: UIViewController {
         return collectionView
     }()
     
+    private let dataManager = RecipesManager()
+    
     private var popularRecipes = [RecipeModel]()
     private var categoryRecipes = [RecipeModel]()
     private var randomRecipes = [RecipeModel]()
@@ -33,6 +35,28 @@ final class RecipesViewController: UIViewController {
         setupViews()
         setConstraints()
         setDelegates()
+        
+        categoryRecipes = dataManager.categories
+        
+        dataManager.fetchRecipe(sort: .popularity) { result in
+            switch result {
+            case .success(let success):
+                self.popularRecipes = success
+                self.collectionView.reloadData()
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
+        
+        dataManager.fetchRecipe(sort: .random) { result in
+            switch result {
+            case .success(let success):
+                self.randomRecipes = success
+                self.collectionView.reloadData()
+            case .failure(let failure):
+                print(failure.localizedDescription)
+            }
+        }
     }
     
     private func setupViews() {
@@ -81,7 +105,6 @@ extension RecipesViewController {
         }
     }
     
-    // Random
     private func createLayoutSection(group: NSCollectionLayoutGroup, behavior: UICollectionLayoutSectionOrthogonalScrollingBehavior, interGroupSpacing: CGFloat, supplementaryItems: [NSCollectionLayoutBoundarySupplementaryItem], contentInsets: Bool) -> NSCollectionLayoutSection {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = behavior
@@ -112,23 +135,17 @@ extension RecipesViewController {
     
     // Category
     private func createCategorySection() -> NSCollectionLayoutSection {
-        
         let item = NSCollectionLayoutItem(layoutSize: .init(
-            widthDimension: .absolute(80),
-            heightDimension: .absolute(100)))
-        
-        let sideInset = (collectionView.frame.width - (80 * 3)) / 2
+            widthDimension: .fractionalWidth(0.3),
+            heightDimension: .absolute(150)))
+        item.contentInsets.bottom = 16
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
             widthDimension: .fractionalWidth(1),
-            heightDimension: .fractionalHeight(0.2)), subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(
-            top: 0, leading: sideInset, bottom: 0, trailing: sideInset)
+            heightDimension: .absolute(150)), subitems: [item])
         
-        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(0)
-        let section = createLayoutSection(
-            group: group, behavior: .none, interGroupSpacing: 0,
-            supplementaryItems: [supplementaryHeaderItem()], contentInsets: true)
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets.leading = 30
         
         return section
     }
@@ -175,14 +192,14 @@ extension RecipesViewController: UICollectionViewDelegate {
 extension RecipesViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        switch sections[indexPath.row] {
-//        case .popular(_):
-//            print(sections[indexPath.row].title)
-//        case .category(_):
-//            print("Open with category")
-//        case .random(_):
-//            print(sections[indexPath.row].title)
-//        }
+        //        switch sections[indexPath.row] {
+        //        case .popular(_):
+        //            print(sections[indexPath.row].title)
+        //        case .category(_):
+        //            print("Open with category")
+        //        case .random(_):
+        //            print(sections[indexPath.row].title)
+        //        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -192,17 +209,22 @@ extension RecipesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         sections[section].count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch sections[indexPath.section] {
-            
         case .popular(let popular):
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: PopularCollectionViewCell.identifier,
                 for: indexPath) as? PopularCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.configureCell(imageName: popular[indexPath.row].image)
+            dataManager.fetchImage(id: popularRecipes[indexPath.row].id,
+                                   size: .size556x370) { image in
+                DispatchQueue.main.async {
+                    cell.addImageToCell(image: image)
+                }
+            }
+            cell.configureCell(model: popular[indexPath.row])
             return cell
             
         case .category(let category):
@@ -216,14 +238,19 @@ extension RecipesViewController: UICollectionViewDataSource {
                                imageName: category[indexPath.row].image)
             return cell
             
-        case .random(let random):
+        case .random(_):
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: RandomCollectionViewCell.identifier,
                 for: indexPath) as? RandomCollectionViewCell
             else {
                 return UICollectionViewCell()
             }
-            cell.configureCell(imageName: random[indexPath.row].image)
+            dataManager.fetchImage(id: randomRecipes[indexPath.row].id,
+                                   size: .size636x393) { image in
+                DispatchQueue.main.async {
+                    cell.addImageToCell(image: image)
+                }
+            }
             return cell
         }
     }
