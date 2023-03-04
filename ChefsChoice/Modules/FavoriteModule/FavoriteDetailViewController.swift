@@ -1,16 +1,9 @@
-//
-//  DetailViewController.swift
-//  ChefsChoice
-//
 
-//  Created by Дмитрий on 02.03.2023.
-
-//
 
 import UIKit
 
-class DetailViewController: UIViewController {
-    
+class FavoriteDetailViewController: UIViewController {
+        
     var recipeModel: RecipeModel!
     
     private lazy var favoriteButton: UIButton = {
@@ -182,17 +175,12 @@ class DetailViewController: UIViewController {
         for step in recipeModel.analyzedInstructions?[0].steps ?? [] {
             lazy var stepLabel: UILabel = {
                 let label = UILabel()
-                var ingridients: [String] = []
-                step.ingredients.forEach { ingridient in
-                    ingridients.append(ingridient.name)
-                }
                 label.translatesAutoresizingMaskIntoConstraints = false
                 label.font = .systemFont(ofSize: 16, weight: .medium)
                 let textLabel = NSMutableAttributedString(string: "Step: \(step.number)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18, weight: .semibold)])
                 textLabel.append(NSMutableAttributedString(string: "\(step.step)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]))
                 textLabel.append(NSMutableAttributedString(string: "Ingredients: ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .semibold)]))
-                //textLabel.append(NSMutableAttributedString(string: "\(step.ingredients[0].name)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]))
-                textLabel.append(NSMutableAttributedString(string: "\(ingridients.joined(separator: ", "))", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]))
+                textLabel.append(NSMutableAttributedString(string: "\(step.ingredients[0].name)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]))
                 label.attributedText = textLabel
                 label.numberOfLines = 0
                 return label
@@ -266,7 +254,7 @@ class DetailViewController: UIViewController {
 
 }
 
-extension DetailViewController: UIScrollViewDelegate {
+extension FavoriteDetailViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.x != 0 {

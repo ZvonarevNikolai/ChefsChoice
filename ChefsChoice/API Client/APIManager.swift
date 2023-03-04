@@ -87,12 +87,9 @@ struct RecipesManager {
                         completion(.failure(error))
                     }
                 }
-                
             }
-
         }
         task.resume()
-        
     }
     
     func parseJSON(_ recipes: Data, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
@@ -105,9 +102,7 @@ struct RecipesManager {
             var result = [RecipeModel]()
 
             for object in decodedData.results {
-                
-                object.analyzedInstructions
-                
+                                
                 let recipe = RecipeModel(id: object.id,
                                          title: object.title,
                                          image: object.image,
@@ -116,8 +111,8 @@ struct RecipesManager {
                                          veryHealthy: object.veryHealthy,
                                          aggregateLikes: object.aggregateLikes,
                                          servings: object.servings,
+                                         summary: object.summary,
                                          analyzedInstructions: object.analyzedInstructions
-                                         
                 )
 
                 result.append(recipe)
@@ -126,8 +121,6 @@ struct RecipesManager {
             let recipe = Recipes(results: result)
             completion(.success(recipe.getRecipes()))
         
-           
-            
         } catch {
             print("Error \(error.localizedDescription) ")
             completion(.failure(error))
@@ -148,10 +141,7 @@ struct RecipesManager {
                             }
                         }
                     }
-    
                 }.resume()
-    
             }
         }
-    
 }
