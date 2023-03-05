@@ -13,7 +13,7 @@ class RandomCollectionViewCell: UICollectionViewCell {
     
     private let randomRecipeImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleToFill
         imageView.image = UIImage(named: "recipe1")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView

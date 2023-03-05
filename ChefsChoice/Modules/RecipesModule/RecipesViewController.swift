@@ -184,23 +184,23 @@ extension RecipesViewController {
 //MARK: - UICollectionViewDelegate
 
 extension RecipesViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        switch sections[indexPath.section] {
+        case .popular(_):
+            let item = sections[indexPath.section].recipes[indexPath.row]
+            print(item.title)
+        case .category(_):
+            print("category")
+        case .random(_):
+            print("random")
+        }
+    }
 }
 
 //MARK: - IUCollectionViewDataSource
 
 extension RecipesViewController: UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //        switch sections[indexPath.row] {
-        //        case .popular(_):
-        //            print(sections[indexPath.row].title)
-        //        case .category(_):
-        //            print("Open with category")
-        //        case .random(_):
-        //            print(sections[indexPath.row].title)
-        //        }
-    }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         sections.count
