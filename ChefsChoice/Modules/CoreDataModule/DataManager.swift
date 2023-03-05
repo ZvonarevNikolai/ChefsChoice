@@ -6,10 +6,11 @@
 //
 
 import Foundation
+/*
 
 class DataManager {
     
-    let coreDataManager = CoreDataManager.shared
+    //let coreDataManager = CoreDataManager.shared
     let networkManager = RecipesManager()
     
     func getAllRecipes(_ complitionHandler: @escaping ([RecipeModel]) -> Void) {
@@ -24,3 +25,5 @@ class DataManager {
         }
     }
 }
+
+*/

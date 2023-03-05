@@ -10,18 +10,18 @@ import CoreData
 
 class FavoriteViewController: UITableViewController {
     
-    private var dataManager = DataManager()
+    //private var dataManager = DataManager()
     private var recipesModel: [RecipeModel]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dataManager.getAllRecipes({ recipes in
-            DispatchQueue.main.async {
-                self.recipesModel = recipes
-                self.tableView.reloadData()
-            }
-        })
+//        dataManager.getAllRecipes({ recipes in
+//            DispatchQueue.main.async {
+//                self.recipesModel = recipes
+//                self.tableView.reloadData()
+//            }
+//        })
         
         tableView.register(CellForFavorite.self, forCellReuseIdentifier: "cell")
     }

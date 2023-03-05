@@ -13,7 +13,7 @@ class RecipeEntity: NSManagedObject {
     class func findOrCreate(_ recipeModel: RecipeModel, context: NSManagedObjectContext) throws -> RecipeEntity {
         
         let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %d", recipeModel.id)
+        request.predicate = NSPredicate(format: "id == %d", recipeModel.id ?? 0)
         
         do {
             let fetchResult = try context.fetch(request)
@@ -26,10 +26,10 @@ class RecipeEntity: NSManagedObject {
         }
         
         let recipeEntity = RecipeEntity(context: context)
-        recipeEntity.id = Int64(recipeModel.id)
-        recipeEntity.title = recipeModel.title
-        recipeEntity.aggregateLikes = Int64(recipeModel.aggregateLikes ?? 0)
-        recipeEntity.readyInMinutes = Int64(recipeModel.readyInMinutes ?? 0)
+//        recipeEntity.id = recipeModel.id
+//        recipeEntity.title = recipeModel.title
+//        recipeEntity.aggregateLikes = Int64(recipeModel.aggregateLikes ?? 0)
+//        recipeEntity.readyInMinutes = Int64(recipeModel.readyInMinutes ?? 0)
         //recipeEntity.image = recipesModel.image
         
         return recipeEntity

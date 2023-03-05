@@ -189,7 +189,12 @@ extension RecipesViewController: UICollectionViewDelegate {
         switch sections[indexPath.section] {
         case .popular(_):
             let item = sections[indexPath.section].recipes[indexPath.row]
-            print(item.title)
+            
+            let detailVC = DetailViewController(recipeModel: item)
+            DispatchQueue.main.async {
+                self.navigationController?.pushViewController(detailVC, animated: true)
+                detailVC.configure(id: item.id)
+            }
         case .category(_):
             print("category")
         case .random(_):

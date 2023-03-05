@@ -11,7 +11,18 @@ import UIKit
 
 class DetailViewController: UIViewController {
     
-    var recipeModel: RecipeModel!
+    private var recipeModel: RecipeModel!
+    
+    var manager: RecipesManager?
+    
+    init(recipeModel: RecipeModel!, image: UIImage? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        self.recipeModel = recipeModel
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private lazy var favoriteButton: UIButton = {
         let button = UIButton()
@@ -21,11 +32,10 @@ class DetailViewController: UIViewController {
         return button
     }()
     
-    private let photoImageView: UIImageView = {
+    private lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(systemName: "carrot.fill")
         return imageView
     }()
     
@@ -141,10 +151,10 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         stepsScrollView.delegate = self
-        
         view.backgroundColor = .white
         setupConstraints()
         addStepsModel()
+        manager = RecipesManager()
     }
     
     @objc private func showDetail(_ sender: UIButton) {
@@ -165,6 +175,14 @@ class DetailViewController: UIViewController {
             stepsScrollView.isHidden = false
         default:
             break
+        }
+    }
+    
+    func configure(id: Int) {
+        DispatchQueue.main.async {
+            self.manager!.fetchImage(id: id, size: .size636x393) { image in
+                self.photoImageView.image = image
+            }
         }
     }
     
@@ -247,12 +265,12 @@ class DetailViewController: UIViewController {
             informationTextView.topAnchor.constraint(equalTo: headingView.bottomAnchor),
             informationTextView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
             informationTextView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
-            informationTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            informationTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             
             stepsScrollView.topAnchor.constraint(equalTo: headingView.bottomAnchor),
             stepsScrollView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
             stepsScrollView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
-            stepsScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            stepsScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             stepsStackView.topAnchor.constraint(equalTo: stepsScrollView.topAnchor),
             stepsStackView.leftAnchor.constraint(equalTo: stepsScrollView.leftAnchor),

@@ -23,17 +23,16 @@ struct Recipes {
 }
 
 struct RecipeModel {
-    
     let id: Int
     let title: String
     let image: String
-    let preparationMinutes: Int
-    let readyInMinutes: Int
-    let veryHealthy: Bool
-    let aggregateLikes: Int
-    let servings: Int
+    let preparationMinutes: Int?
+    let readyInMinutes: Int?
+    let veryHealthy: Bool?
+    let aggregateLikes: Int?
+    let servings: Int?
     let analyzedInstructions: [AnalyzedInstructions]?
-    
+    let summary: String?
 }
 
 

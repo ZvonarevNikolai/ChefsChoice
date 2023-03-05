@@ -31,27 +31,27 @@ enum SizeImage: String {
     case size636x393 = "636x393"
 }
 
-struct RecipesManager {
+final class RecipesManager {
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch"
     let apiKey = "8e2fae2277264f7b9cebc10bef8c7384"
     
     let categories: [RecipeModel] = [
         .init(id: 0, title: "Desserts", image: "cupcake", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil),
+              servings: 0, analyzedInstructions: nil, summary: nil),
         .init(id: 1, title: "Soups", image: "hot-soup", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil),
+              servings: 0, analyzedInstructions: nil, summary: nil),
         .init(id: 2, title: "Salads", image: "salad", preparationMinutes: 0, readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil),
+              servings: 0, analyzedInstructions: nil, summary: nil),
         .init(id: 3, title: "Seafood", image: "seafood", preparationMinutes: 0, readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil),
+              servings: 0, analyzedInstructions: nil, summary: nil),
         .init(id: 4, title: "Spaguetti", image: "spaguetti",
               preparationMinutes: 0, readyInMinutes: 0, veryHealthy: false,
-              aggregateLikes: 0, servings: 0, analyzedInstructions: nil),
+              aggregateLikes: 0, servings: 0, analyzedInstructions: nil, summary: nil),
         .init(id: 5, title: "Steak", image: "steak", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil)
+              servings: 0, analyzedInstructions: nil, summary: nil)
     ]
     
     func fetchRecipe(sort: SortRecipe, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
@@ -124,7 +124,8 @@ struct RecipesManager {
                     veryHealthy: object.veryHealthy,
                     aggregateLikes: object.aggregateLikes,
                     servings: object.servings,
-                    analyzedInstructions: object.analyzedInstructions
+                    analyzedInstructions: object.analyzedInstructions,
+                    summary: object.summary
                 )
                 result.append(recipe)
             }
