@@ -116,7 +116,11 @@ class DetailViewController: UIViewController {
         textView.font = .systemFont(ofSize: 16)
         textView.isHidden = false
         textView.isEditable = false
-        textView.text = recipeModel.summary
+        print(recipeModel.summary)
+        textView.text = recipeModel.summary?
+            .replacingOccurrences(of: "<b>", with: " ")
+            .replacingOccurrences(of: "</b>", with: " ").replacingOccurrences(of: "<a href=", with: " ")
+        textView.dataDetectorTypes = .all
         return textView
     }()
     

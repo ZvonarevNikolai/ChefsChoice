@@ -424,25 +424,3 @@ extension SearchVC: UICollectionViewDelegateFlowLayout, UICollectionViewDataSour
     
 }
 
-//MARK: - SUI Preview
-
-struct FlowProvider: PreviewProvider {
-    static var previews: some View {
-        ContainterView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContainterView: UIViewControllerRepresentable {
-        
-        let view = SearchVC()
-        func makeUIViewController(context: UIViewControllerRepresentableContext<FlowProvider.ContainterView>) -> SearchVC {
-            return view
-        }
-        
-        func updateUIViewController(_ uiViewController: FlowProvider.ContainterView.UIViewControllerType, context: UIViewControllerRepresentableContext<FlowProvider.ContainterView>) {
-            
-        }
-        
-    }
-    
-}
-

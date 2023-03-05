@@ -12,7 +12,9 @@ final class MainTabBarController: UITabBarController {
         let recipesVC = createNavigationVC(
             rootVC: RecipesViewController(),
             title: "Chef's Choise", imageSystemName: "swift")
-        viewControllers = [recipesVC]
+        let searchVC = createNavigationVC(
+            rootVC: SearchVC(), title: "Search", imageSystemName: "search")
+        viewControllers = [recipesVC, searchVC]
     }
     
     private func createNavigationVC(

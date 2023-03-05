@@ -35,7 +35,7 @@ final class RecipesViewController: UIViewController {
         setupViews()
         setConstraints()
         setDelegates()
-        
+        setUpNavBar()
         categoryRecipes = dataManager.categories
         
         dataManager.fetchRecipe(sort: .popularity) { result in
@@ -82,6 +82,21 @@ final class RecipesViewController: UIViewController {
     private func setDelegates() {
         collectionView.delegate = self
         collectionView.dataSource = self
+    }
+    
+    private func setUpNavBar() {
+        let searchItem = UIBarButtonItem(
+            barButtonSystemItem: .search, target: self,
+            action: #selector(searhDidTap))
+        
+        navigationItem.rightBarButtonItem = searchItem
+    }
+    
+    @objc private func searhDidTap() {
+        let searchController = SearchVC()
+        let navVC = UINavigationController(rootViewController: searchController)
+        
+        present(navVC, animated: true)
     }
 }
 
