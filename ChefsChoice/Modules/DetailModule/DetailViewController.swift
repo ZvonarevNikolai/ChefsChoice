@@ -13,7 +13,7 @@ class DetailViewController: UIViewController {
     
     private var recipeModel: RecipeModel!
     
-    var manager: RecipesManager?
+    private var manager: RecipesManager?
     
     init(recipeModel: RecipeModel!, image: UIImage? = nil) {
         super.init(nibName: nil, bundle: nil)
@@ -35,7 +35,7 @@ class DetailViewController: UIViewController {
     private lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -116,7 +116,6 @@ class DetailViewController: UIViewController {
         textView.font = .systemFont(ofSize: 16)
         textView.isHidden = false
         textView.isEditable = false
-        print(recipeModel.summary)
         textView.text = recipeModel.summary?
             .replacingOccurrences(of: "<b>", with: " ")
             .replacingOccurrences(of: "</b>", with: " ").replacingOccurrences(of: "<a href=", with: " ")
@@ -154,11 +153,11 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        manager = RecipesManager()
         stepsScrollView.delegate = self
         view.backgroundColor = .white
         setupConstraints()
         addStepsModel()
-        manager = RecipesManager()
     }
     
     @objc private func showDetail(_ sender: UIButton) {
@@ -184,7 +183,7 @@ class DetailViewController: UIViewController {
     
     func configure(id: Int) {
         DispatchQueue.main.async {
-            self.manager!.fetchImage(id: id, size: .size636x393) { image in
+            self.manager?.fetchImage(id: id, size: .size636x393) { image in
                 self.photoImageView.image = image
             }
         }
@@ -239,7 +238,8 @@ class DetailViewController: UIViewController {
         
         
         NSLayoutConstraint.activate([
-            photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            photoImageView.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor),
             photoImageView.leftAnchor.constraint(equalTo: view.leftAnchor),
             photoImageView.rightAnchor.constraint(equalTo: view.rightAnchor),
             photoImageView.heightAnchor.constraint(equalToConstant: view.frame.width),

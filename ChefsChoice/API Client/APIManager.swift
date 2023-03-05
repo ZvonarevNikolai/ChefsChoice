@@ -32,8 +32,17 @@ enum SizeImage: String {
 }
 
 final class RecipesManager {
+    
+    init() {
+        print("init")
+    }
+    
+    deinit {
+        print("deinit")
+    }
+    
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch"
-    let apiKey = "8e2fae2277264f7b9cebc10bef8c7384"
+    let apiKey = "7f075a3ab7784828a0a0311dc05c4a11"
     
     let categories: [RecipeModel] = [
         .init(id: 0, title: "Desserts", image: "cupcake", preparationMinutes: 0,
