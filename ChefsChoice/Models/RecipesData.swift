@@ -23,6 +23,7 @@ struct RecipeData: Codable {
     let veryHealthy: Bool
     let aggregateLikes: Int
     let servings: Int
+    let summary: String
     let analyzedInstructions: [AnalyzedInstructions]
     
 }

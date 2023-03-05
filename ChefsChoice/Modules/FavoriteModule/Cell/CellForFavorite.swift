@@ -18,7 +18,6 @@ class CellForFavorite: UITableViewCell {
         label.layer.masksToBounds = true
         label.layer.cornerRadius = 6
         label.textAlignment = .center
-        label.text = "Likes: 2034"
         return label
     }()
     
@@ -74,13 +73,9 @@ class CellForFavorite: UITableViewCell {
     
     func configure(_ recipeModel: RecipeModel) {
         titleLabel.text = recipeModel.title
-        //photoImageView.image = recipeModel
-    }
-    
-    func configureTest(_ testModel: testModel) {
-        titleLabel.text = testModel.title
-        cookingLabel.text = "Time for cooking:\n \(testModel.time) minutes"
-        photoImageView.image = testModel.image
+        cookingLabel.text = "\(recipeModel.readyInMinutes ?? 0)"
+        likesLabel.text = "Likes: \(recipeModel.aggregateLikes ?? 0)"
+        //photoImageView.image = recipesModel
     }
     
     override func prepareForReuse() {
@@ -104,17 +99,5 @@ class CellForFavorite: UITableViewCell {
             likesLabel.heightAnchor.constraint(equalToConstant: 30)
         ])
     }
-    
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        // Initialization code
-//    }
-//
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//
-//        // Configure the view for the selected state
-//    }
-
 }
 
