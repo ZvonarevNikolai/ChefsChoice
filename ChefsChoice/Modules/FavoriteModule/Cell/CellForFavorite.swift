@@ -23,16 +23,17 @@ class CellForFavorite: UITableViewCell {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textColor = .black
+        label.font = .systemFont(ofSize: 30, weight: .bold)
+        label.textColor = .white
         label.numberOfLines = 0
+        label.textAlignment = .left
         return label
     }()
     
     private lazy var cookingLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .bold)
-        label.textColor = .blue
+        label.textColor = .white
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
@@ -73,9 +74,14 @@ class CellForFavorite: UITableViewCell {
     
     func configure(_ recipeModel: RecipeModel) {
         titleLabel.text = recipeModel.title
-        cookingLabel.text = "\(recipeModel.readyInMinutes ?? 0)"
+        cookingLabel.text = "Cooking time: \(recipeModel.readyInMinutes ?? 0) minutes"
         likesLabel.text = "Likes: \(recipeModel.aggregateLikes ?? 0)"
-        //photoImageView.image = recipesModel
+        
+        DispatchQueue.main.async {
+            RecipesManager().fetchImage(id: recipeModel.id, size: .size480x360) { image in
+                self.photoImageView.image = image
+            }
+        }
     }
     
     override func prepareForReuse() {

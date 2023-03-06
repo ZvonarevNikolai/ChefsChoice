@@ -25,7 +25,7 @@ struct Recipes {
 struct RecipeModel {
     let id: Int
     let title: String
-    let image: String
+    let image: String?
     let preparationMinutes: Int?
     let readyInMinutes: Int?
     let veryHealthy: Bool?

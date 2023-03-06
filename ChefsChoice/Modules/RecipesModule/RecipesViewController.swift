@@ -240,7 +240,7 @@ extension RecipesViewController: UICollectionViewDataSource {
             }
             
             cell.configureCell(categoryName: category[indexPath.row].title,
-                               imageName: category[indexPath.row].image)
+                               imageName: category[indexPath.row].image  ?? "" )
             return cell
             
         case .random(_):

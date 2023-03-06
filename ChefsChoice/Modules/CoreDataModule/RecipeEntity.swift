@@ -13,7 +13,7 @@ class RecipeEntity: NSManagedObject {
     class func findOrCreate(_ recipeModel: RecipeModel, context: NSManagedObjectContext) throws -> RecipeEntity {
         
         let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %d", recipeModel.id ?? 0)
+        request.predicate = NSPredicate(format: "id == %d", recipeModel.id)
         
         do {
             let fetchResult = try context.fetch(request)
