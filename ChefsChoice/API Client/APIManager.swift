@@ -38,20 +38,20 @@ final class RecipesManager {
     let categories: [RecipeModel] = [
         .init(id: 0, title: "Desserts", image: "cupcake", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil),
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
         .init(id: 1, title: "Soups", image: "hot-soup", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil),
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
         .init(id: 2, title: "Salads", image: "salad", preparationMinutes: 0, readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil),
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
         .init(id: 3, title: "Seafood", image: "seafood", preparationMinutes: 0, readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil),
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
         .init(id: 4, title: "Spaguetti", image: "spaguetti",
               preparationMinutes: 0, readyInMinutes: 0, veryHealthy: false,
-              aggregateLikes: 0, servings: 0, analyzedInstructions: nil, summary: nil),
+              aggregateLikes: 0, servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
         .init(id: 5, title: "Steak", image: "steak", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil)
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil)
     ]
     
     func fetchRecipe(sort: SortRecipe, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
@@ -125,7 +125,8 @@ final class RecipesManager {
                     aggregateLikes: object.aggregateLikes,
                     servings: object.servings,
                     analyzedInstructions: object.analyzedInstructions,
-                    summary: object.summary
+                    summary: object.summary,
+                    photo: nil
                 )
                 result.append(recipe)
             }

@@ -1,13 +1,12 @@
 
 
 import UIKit
+import CoreData
 
 class FavoriteDetailViewController: UIViewController {
     
     var recipeModel: RecipeModel!
-    
     private var context = CoreDataManager.shared.context
-    
     private lazy var recipe = RecipeEntity(context: context)
     
     init(recipeModel: RecipeModel!, image: UIImage? = nil) {
@@ -153,6 +152,8 @@ class FavoriteDetailViewController: UIViewController {
         super.viewDidLoad()
         stepsScrollView.delegate = self
         view.backgroundColor = .white
+        configure(id: recipeModel.id)
+        
         setupConstraints()
         addStepsModel()
     }
@@ -197,28 +198,57 @@ class FavoriteDetailViewController: UIViewController {
     }
     
     func saveNewRecipe() {
-        recipe.title = recipeModel.title
-        recipe.readyInMinutes = Int64(recipeModel.readyInMinutes ?? 0)
-        recipe.aggregateLikes = Int64(recipeModel.aggregateLikes ?? 0)
-        recipe.id = Int64(recipeModel.id)
-        recipe.summary = recipeModel.summary
-        recipe.servings = Int64(recipeModel.servings ?? 0)
-//        RecipesManager().fetchImage(id: recipeModel.id, size: .size480x360) { image in
-//            self.recipe.image = image.pngData()
-//        }
-        do {
-            try context.save()
-        } catch {
-            print(error)
+        context.perform {
+            let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+            
+            do {
+                let fetchResult = try self.context.fetch(request)
+                if fetchResult.count > 0 {
+                    assert(fetchResult.count == 1, "Duplicate has been found in DB!")
+                } else {
+                    self.recipe.title = self.recipeModel.title
+                    self.recipe.readyInMinutes = Int64(self.recipeModel.readyInMinutes ?? 0)
+                    self.recipe.aggregateLikes = Int64(self.recipeModel.aggregateLikes ?? 0)
+                    self.recipe.id = Int64(self.recipeModel.id)
+                    self.recipe.summary = self.recipeModel.summary
+                    self.recipe.servings = Int64(self.recipeModel.servings ?? 0)
+                    RecipesManager().fetchImage(id: self.recipeModel.id, size: .size480x360) { image in
+                        let data = image.jpegData(compressionQuality: .zero)
+                        self.recipe.image = data
+                    }
+                    do {
+                        try self.context.save()
+                    } catch {
+                        print(error)
+                    }
+                }
+            } catch let error {
+                print("error: \(error)")
+            }
         }
     }
     
     func removeRecipe() {
-        context.delete(recipe)
-        do {
-            try context.save()
-        } catch {
-            print(error)
+        context.perform {
+            let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+            
+            do {
+                let fetchResult = try self.context.fetch(request)
+                if fetchResult.count > 0 {
+                    assert(fetchResult.count == 1, "Duplicate has been found in DB!")
+                    self.context.delete(fetchResult[0])
+                    
+                    do {
+                        try self.context.save()
+                    } catch {
+                        print(error)
+                    }
+                }
+            } catch let error {
+                print("error: \(error)")
+            }
         }
     }
     
@@ -263,7 +293,7 @@ class FavoriteDetailViewController: UIViewController {
         
         
         NSLayoutConstraint.activate([
-            photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -CGFloat(navigationController?.navigationBar.frame.height ?? 0)),
+            photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -100),
             photoImageView.leftAnchor.constraint(equalTo: view.leftAnchor),
             photoImageView.rightAnchor.constraint(equalTo: view.rightAnchor),
             photoImageView.heightAnchor.constraint(equalToConstant: view.frame.width),
@@ -271,7 +301,7 @@ class FavoriteDetailViewController: UIViewController {
             minutesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             minutesLabel.bottomAnchor.constraint(equalTo: headingView.topAnchor, constant: -20),
             
-            headingView.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -(1/3)*view.frame.width),
+            headingView.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -(1/4)*view.frame.width),
             headingView.leftAnchor.constraint(equalTo: view.leftAnchor),
             headingView.rightAnchor.constraint(equalTo: view.rightAnchor),
             headingView.heightAnchor.constraint(equalToConstant: 100),

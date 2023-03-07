@@ -13,10 +13,9 @@ import CoreData
 class DetailViewController: UIViewController {
     
     private var recipeModel: RecipeModel!
-    
-    private var context = CoreDataManager.shared.context    
-    
+    private var context = CoreDataManager.shared.context
     private lazy var recipe = RecipeEntity(context: context)
+    private lazy var analyzedInstructions = AnalyzedInstructionsEntity(context: context)
         
     init(recipeModel: RecipeModel!, image: UIImage? = nil) {
         super.init(nibName: nil, bundle: nil)
@@ -30,7 +29,6 @@ class DetailViewController: UIViewController {
     private lazy var favoriteButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "notFavorite"), for: .normal)
         button.addTarget(self, action: #selector(addFavoriteRecipe), for: .touchUpInside)
         return button
     }()
@@ -79,7 +77,6 @@ class DetailViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.tag = 1
         button.addTarget(self, action: #selector(showDetail), for: .touchUpInside)
-        
         return button
     }()
     
@@ -164,6 +161,10 @@ class DetailViewController: UIViewController {
         addStepsModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        favoriteButton.setImage(favoriteOrNotFavotite(), for: .normal)
+    }
     
     @objc private func showDetail(_ sender: UIButton) {
         switch sender.tag {
@@ -204,30 +205,78 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func saveNewRecipe() {        
-        recipe.title = recipeModel.title
-        recipe.readyInMinutes = Int64(recipeModel.readyInMinutes ?? 0)
-        recipe.aggregateLikes = Int64(recipeModel.aggregateLikes ?? 0)
-        recipe.id = Int64(recipeModel.id)
-        recipe.summary = recipeModel.summary
-        recipe.servings = Int64(recipeModel.servings ?? 0)
-        RecipesManager().fetchImage(id: recipeModel.id, size: .size480x360) { image in
-            self.recipe.image = image.pngData()
-        }
-        do {
-            try context.save()
-        } catch {
-            print(error)
+    func saveNewRecipe() {
+        context.perform {
+            let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+            
+            do {
+                let fetchResult = try self.context.fetch(request)
+                if fetchResult.count > 0 {
+                    assert(fetchResult.count == 1, "Duplicate has been found in DB!")
+                } else {
+                    self.recipe.title = self.recipeModel.title
+                    self.recipe.readyInMinutes = Int64(self.recipeModel.readyInMinutes ?? 0)
+                    self.recipe.aggregateLikes = Int64(self.recipeModel.aggregateLikes ?? 0)
+                    self.recipe.id = Int64(self.recipeModel.id)
+                    self.recipe.summary = self.recipeModel.summary
+                    self.recipe.servings = Int64(self.recipeModel.servings ?? 0)
+                    RecipesManager().fetchImage(id: self.recipeModel.id, size: .size480x360) { image in
+                        let data = image.jpegData(compressionQuality: .zero)
+                        self.recipe.image = data
+                    }
+                    //self.analyzedInstructions = self.recipeModel.analyzedInstructions
+                    do {
+                        try self.context.save()
+                    } catch {
+                        print(error)
+                    }
+                }
+            } catch let error {
+                print("error: \(error)")
+            }
         }
     }
     
     func removeRecipe() {
-        context.delete(recipe)
-        do {
-            try context.save()
-        } catch {
-            print(error)
+        context.perform {
+            let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+            
+            do {
+                let fetchResult = try self.context.fetch(request)
+                if fetchResult.count > 0 {
+                    assert(fetchResult.count == 1, "Duplicate has been found in DB!")
+                    self.context.delete(fetchResult[0])
+                    
+                    do {
+                        try self.context.save()
+                    } catch {
+                        print(error)
+                    }
+                }
+            } catch let error {
+                print("error: \(error)")
+            }
         }
+    }
+    
+    func favoriteOrNotFavotite() -> UIImage {
+        let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+        
+        do {
+            let fetchResult = try self.context.fetch(request)
+            if fetchResult.count > 0 {
+                
+                return UIImage(named: "favorite") ?? UIImage()
+            } else {
+                return UIImage(named: "notFavorite") ?? UIImage()
+            }
+        } catch let error {
+            print("error: \(error)")
+        }
+        return UIImage()
     }
     
     private func addStepsModel() {
@@ -270,7 +319,7 @@ class DetailViewController: UIViewController {
         
         
         NSLayoutConstraint.activate([
-            photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -CGFloat(navigationController?.navigationBar.frame.height ?? 0)),
+            photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -100),
             photoImageView.leftAnchor.constraint(equalTo: view.leftAnchor),
             photoImageView.rightAnchor.constraint(equalTo: view.rightAnchor),
             photoImageView.heightAnchor.constraint(equalToConstant: view.frame.width),

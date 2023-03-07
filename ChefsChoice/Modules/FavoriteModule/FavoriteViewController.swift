@@ -11,7 +11,6 @@ import CoreData
 class FavoriteViewController: UITableViewController {
     
     private var context = CoreDataManager.shared.context
-
     private var recipesModel: [RecipeModel] = []
     
     override func viewDidLoad() {
@@ -41,7 +40,8 @@ class FavoriteViewController: UITableViewController {
                     aggregateLikes: Int($0.aggregateLikes),
                     servings: Int($0.servings),
                     analyzedInstructions: nil,
-                    summary: $0.summary)})
+                    summary: $0.summary,
+                    photo: $0.image)})
                 self.recipesModel = dBRecipes ?? []
                 self.tableView.reloadData()
             }

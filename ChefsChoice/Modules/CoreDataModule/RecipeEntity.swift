@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class RecipeEntity: NSManagedObject {
+public class RecipeEntity: NSManagedObject {
     
     class func findOrCreate(_ recipeModel: RecipeModel, context: NSManagedObjectContext) throws -> RecipeEntity {
         
@@ -17,7 +17,7 @@ class RecipeEntity: NSManagedObject {
         
         do {
             let fetchResult = try context.fetch(request)
-            if fetchResult .count > 0 {
+            if fetchResult.count > 0 {
                 assert(fetchResult.count == 1, "Duplicate has been found in DB!")
                 return fetchResult[0]
             }
@@ -38,6 +38,8 @@ class RecipeEntity: NSManagedObject {
     class func allRecipesEntity(_ context: NSManagedObjectContext) throws -> [RecipeEntity] {
         
         let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "aggregateLikes", ascending: false)
+        request.sortDescriptors = [sortDescriptor]
         do {
             return try context.fetch(request)
         } catch {
