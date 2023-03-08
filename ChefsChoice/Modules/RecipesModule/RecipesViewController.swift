@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ProgressHUD
 
 final class RecipesViewController: UIViewController {
     
@@ -38,13 +39,15 @@ final class RecipesViewController: UIViewController {
         setUpNavBar()
         dataManager = RecipesManager()
         categoryRecipes = dataManager?.categories ?? []
-        
+        ProgressHUD.show()
         dataManager?.fetchRecipe(sort: .popularity) { [weak self] result in
             switch result {
             case .success(let success):
+                ProgressHUD.dismiss()
                 self?.popularRecipes = success
                 self?.collectionView.reloadData()
             case .failure(let failure):
+                ProgressHUD.dismiss()
                 print(failure.localizedDescription)
             }
         }

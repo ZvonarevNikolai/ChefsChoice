@@ -17,6 +17,7 @@
 		28C5C61029ADF7C200AAE23B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28C5C5E829ADF0F400AAE23B /* CoreData.framework */; };
 		28C5C61529AF6C8A00AAE23B /* RecipeEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C5C61429AF6C8A00AAE23B /* RecipeEntity.swift */; };
 		5230E99029B2191500ED3AFF /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5230E98F29B2191500ED3AFF /* APIManager.swift */; };
+		801F08EE29B8DD0E008F866F /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 801F08ED29B8DD0E008F866F /* ProgressHUD */; };
 		806B326D29B10C1000B0DF56 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806B326C29B10C1000B0DF56 /* OnboardingViewController.swift */; };
 		806B326F29B10C2100B0DF56 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806B326E29B10C2100B0DF56 /* DetailViewController.swift */; };
 		806B327229B113FD00B0DF56 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806B327029B113FC00B0DF56 /* SearchVC.swift */; };
@@ -72,6 +73,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28C5C61029ADF7C200AAE23B /* CoreData.framework in Frameworks */,
+				801F08EE29B8DD0E008F866F /* ProgressHUD in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +282,9 @@
 			dependencies = (
 			);
 			name = ChefsChoice;
+			packageProductDependencies = (
+				801F08ED29B8DD0E008F866F /* ProgressHUD */,
+			);
 			productName = ChefsChoice;
 			productReference = 80C5986629ABF987007D1518 /* ChefsChoice.app */;
 			productType = "com.apple.product-type.application";
@@ -308,6 +313,9 @@
 				Base,
 			);
 			mainGroup = 80C5985D29ABF987007D1518;
+			packageReferences = (
+				801F08EC29B8DD0E008F866F /* XCRemoteSwiftPackageReference "ProgressHUD" */,
+			);
 			productRefGroup = 80C5986729ABF987007D1518 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -496,7 +504,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "#team5";
+				DEVELOPMENT_TEAM = X6QCC36TXK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChefsChoice/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chef's Choise";
@@ -530,7 +538,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "#team5";
+				DEVELOPMENT_TEAM = X6QCC36TXK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChefsChoice/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chef's Choise";
@@ -578,6 +586,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		801F08EC29B8DD0E008F866F /* XCRemoteSwiftPackageReference "ProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/relatedcode/ProgressHUD";
+			requirement = {
+				kind = exactVersion;
+				version = 13.6.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		801F08ED29B8DD0E008F866F /* ProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 801F08EC29B8DD0E008F866F /* XCRemoteSwiftPackageReference "ProgressHUD" */;
+			productName = ProgressHUD;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		28C5C60D29ADF76100AAE23B /* ChefsChoice.xcdatamodeld */ = {

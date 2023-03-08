@@ -322,10 +322,10 @@ class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate([
 
-            photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -100),
+            photoImageView.topAnchor.constraint(equalTo: view.topAnchor),
             photoImageView.leftAnchor.constraint(equalTo: view.leftAnchor),
             photoImageView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            photoImageView.heightAnchor.constraint(equalToConstant: view.frame.width),
+            photoImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/3),
             
             minutesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             minutesLabel.bottomAnchor.constraint(equalTo: headingView.topAnchor, constant: -20),

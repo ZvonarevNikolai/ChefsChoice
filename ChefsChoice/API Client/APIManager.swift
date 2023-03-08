@@ -53,14 +53,17 @@ final class RecipesManager {
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
 
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-        .init(id: 2, title: "Salads", image: "salad", preparationMinutes: 0, readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
+        .init(id: 2, title: "Salads", image: "salad", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-        .init(id: 3, title: "Seafood", image: "seafood", preparationMinutes: 0, readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
+        .init(id: 3, title: "Seafood", image: "seafood", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
 
         .init(id: 4, title: "Spaguetti", image: "spaguetti",
               preparationMinutes: 0, readyInMinutes: 0, veryHealthy: false,
-              aggregateLikes: 0, servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+              aggregateLikes: 0, servings: 0, analyzedInstructions: nil,
+              summary: nil, photo: nil),
         .init(id: 5, title: "Steak", image: "steak", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil)
