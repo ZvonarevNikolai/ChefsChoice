@@ -32,20 +32,32 @@ enum SizeImage: String {
 }
 
 final class RecipesManager {
+    
+    init() {
+        print("init")
+    }
+    
+    deinit {
+        print("deinit")
+    }
+    
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch"
-    //let apiKey = "8e2fae2277264f7b9cebc10bef8c7384"
-    let apiKey = "c632b0dfad414a67b0e28941a4a10fc9" //Dmitrii
+
+    let apiKey = "7f075a3ab7784828a0a0311dc05c4a11"
+    
     let categories: [RecipeModel] = [
         .init(id: 0, title: "Desserts", image: "cupcake", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
         .init(id: 1, title: "Soups", image: "hot-soup", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
+
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
         .init(id: 2, title: "Salads", image: "salad", preparationMinutes: 0, readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
         .init(id: 3, title: "Seafood", image: "seafood", preparationMinutes: 0, readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+
         .init(id: 4, title: "Spaguetti", image: "spaguetti",
               preparationMinutes: 0, readyInMinutes: 0, veryHealthy: false,
               aggregateLikes: 0, servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),

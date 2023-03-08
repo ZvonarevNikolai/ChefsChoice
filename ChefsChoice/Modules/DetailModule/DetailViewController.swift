@@ -17,6 +17,7 @@ class DetailViewController: UIViewController {
     private lazy var recipe = RecipeEntity(context: context)
     private lazy var analyzedInstructions = AnalyzedInstructionsEntity(context: context)
         
+
     init(recipeModel: RecipeModel!, image: UIImage? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.recipeModel = recipeModel
@@ -36,7 +37,7 @@ class DetailViewController: UIViewController {
     private lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -121,6 +122,7 @@ class DetailViewController: UIViewController {
             .replacingOccurrences(of: "</b>", with: "")
             .replacingOccurrences(of: "</a>", with: "")
             .replacingOccurrences(of: "a href=", with: "")
+
         textView.dataDetectorTypes = .all
         return textView
     }()
@@ -155,6 +157,7 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        manager = RecipesManager()
         stepsScrollView.delegate = self
         view.backgroundColor = .white
         setupConstraints()
@@ -319,6 +322,7 @@ class DetailViewController: UIViewController {
         
         
         NSLayoutConstraint.activate([
+
             photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -100),
             photoImageView.leftAnchor.constraint(equalTo: view.leftAnchor),
             photoImageView.rightAnchor.constraint(equalTo: view.rightAnchor),

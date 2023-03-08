@@ -18,7 +18,7 @@ final class RecipesViewController: UIViewController {
         return collectionView
     }()
     
-    private let dataManager = RecipesManager()
+    private var dataManager: RecipesManager?
     
     private var popularRecipes = [RecipeModel]()
     private var categoryRecipes = [RecipeModel]()
@@ -35,24 +35,25 @@ final class RecipesViewController: UIViewController {
         setupViews()
         setConstraints()
         setDelegates()
+        setUpNavBar()
+        dataManager = RecipesManager()
+        categoryRecipes = dataManager?.categories ?? []
         
-        categoryRecipes = dataManager.categories
-        
-        dataManager.fetchRecipe(sort: .popularity) { result in
+        dataManager?.fetchRecipe(sort: .popularity) { [weak self] result in
             switch result {
             case .success(let success):
-                self.popularRecipes = success
-                self.collectionView.reloadData()
+                self?.popularRecipes = success
+                self?.collectionView.reloadData()
             case .failure(let failure):
                 print(failure.localizedDescription)
             }
         }
         
-        dataManager.fetchRecipe(sort: .random) { result in
+        dataManager?.fetchRecipe(sort: .random) { [weak self] result in
             switch result {
             case .success(let success):
-                self.randomRecipes = success
-                self.collectionView.reloadData()
+                self?.randomRecipes = success
+                self?.collectionView.reloadData()
             case .failure(let failure):
                 print(failure.localizedDescription)
             }
@@ -82,6 +83,21 @@ final class RecipesViewController: UIViewController {
     private func setDelegates() {
         collectionView.delegate = self
         collectionView.dataSource = self
+    }
+    
+    private func setUpNavBar() {
+        let searchItem = UIBarButtonItem(
+            barButtonSystemItem: .search, target: self,
+            action: #selector(searhDidTap))
+        
+        navigationItem.rightBarButtonItem = searchItem
+    }
+    
+    @objc private func searhDidTap() {
+        let searchController = SearchVC()
+        let navVC = UINavigationController(rootViewController: searchController)
+        
+        present(navVC, animated: true)
     }
 }
 
@@ -188,17 +204,23 @@ extension RecipesViewController: UICollectionViewDelegate {
         
         switch sections[indexPath.section] {
         case .popular(_):
-            let item = sections[indexPath.section].recipes[indexPath.row]
+            let recipe = sections[indexPath.section].recipes[indexPath.row]
             
-            let detailVC = DetailViewController(recipeModel: item)
+            let detailVC = DetailViewController(recipeModel: recipe)
             DispatchQueue.main.async {
                 self.navigationController?.pushViewController(detailVC, animated: true)
-                detailVC.configure(id: item.id)
+                detailVC.configure(id: recipe.id)
             }
         case .category(_):
             print("category")
         case .random(_):
-            print("random")
+            let recipe = sections[indexPath.section].recipes[indexPath.row]
+            
+            let detailVC = DetailViewController(recipeModel: recipe)
+            DispatchQueue.main.async {
+                self.navigationController?.pushViewController(detailVC, animated: true)
+                detailVC.configure(id: recipe.id)
+            }
         }
     }
 }
@@ -223,7 +245,7 @@ extension RecipesViewController: UICollectionViewDataSource {
                 for: indexPath) as? PopularCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            dataManager.fetchImage(id: popularRecipes[indexPath.row].id,
+            dataManager?.fetchImage(id: popularRecipes[indexPath.row].id,
                                    size: .size556x370) { image in
                 DispatchQueue.main.async {
                     cell.addImageToCell(image: image)
@@ -250,7 +272,7 @@ extension RecipesViewController: UICollectionViewDataSource {
             else {
                 return UICollectionViewCell()
             }
-            dataManager.fetchImage(id: randomRecipes[indexPath.row].id,
+            dataManager?.fetchImage(id: randomRecipes[indexPath.row].id,
                                    size: .size636x393) { image in
                 DispatchQueue.main.async {
                     cell.addImageToCell(image: image)
