@@ -34,6 +34,8 @@
 		80D3C20429B0C31600C3B171 /* RecipesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D3C1FC29B0C31600C3B171 /* RecipesViewController.swift */; };
 		80D3C20529B0C31600C3B171 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D3C1FD29B0C31600C3B171 /* MockData.swift */; };
 		80D3C20629B0C31600C3B171 /* SectionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D3C1FE29B0C31600C3B171 /* SectionList.swift */; };
+		E574DA6E29B7B37C00E89653 /* RecipesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E574DA6D29B7B37C00E89653 /* RecipesListViewController.swift */; };
+		E574DA7029B7BAAA00E89653 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E574DA6F29B7BAAA00E89653 /* CustomCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +67,8 @@
 		80D3C1FC29B0C31600C3B171 /* RecipesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesViewController.swift; sourceTree = "<group>"; };
 		80D3C1FD29B0C31600C3B171 /* MockData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		80D3C1FE29B0C31600C3B171 /* SectionList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionList.swift; sourceTree = "<group>"; };
+		E574DA6D29B7B37C00E89653 /* RecipesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesListViewController.swift; sourceTree = "<group>"; };
+		E574DA6F29B7BAAA00E89653 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +129,7 @@
 		80682F4329AD00AE00640388 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				E574DA6C29B7B33200E89653 /* RecipesListModule */,
 				806B326A29B10BDF00B0DF56 /* OnboardingModule */,
 				28C5C61329AF6C6400AAE23B /* CoreDataModule */,
 				80C5987F29ABFABC007D1518 /* MainTabBarModule */,
@@ -266,6 +271,15 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		E574DA6C29B7B33200E89653 /* RecipesListModule */ = {
+			isa = PBXGroup;
+			children = (
+				E574DA6D29B7B37C00E89653 /* RecipesListViewController.swift */,
+				E574DA6F29B7BAAA00E89653 /* CustomCell.swift */,
+			);
+			path = RecipesListModule;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -349,7 +363,9 @@
 				806B327329B113FD00B0DF56 /* RecipeTableViewCell.swift in Sources */,
 				80D3C20629B0C31600C3B171 /* SectionList.swift in Sources */,
 				28C5C60F29ADF76200AAE23B /* ChefsChoice.xcdatamodeld in Sources */,
+				E574DA7029B7BAAA00E89653 /* CustomCell.swift in Sources */,
 				28C5C5E329ADC5BA00AAE23B /* FavoriteViewController.swift in Sources */,
+				E574DA6E29B7B37C00E89653 /* RecipesListViewController.swift in Sources */,
 				2875FF5229B31B320082D183 /* CoreDataManager.swift in Sources */,
 				80D3C20029B0C31600C3B171 /* RandomCollectionViewCell.swift in Sources */,
 				806B326D29B10C1000B0DF56 /* OnboardingViewController.swift in Sources */,
