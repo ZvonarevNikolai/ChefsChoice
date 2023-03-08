@@ -1,33 +1,45 @@
 
 
 import UIKit
+import CoreData
 
 class FavoriteDetailViewController: UIViewController {
-        
+    
     var recipeModel: RecipeModel!
+    private var context = CoreDataManager.shared.context
+    private lazy var recipe = RecipeEntity(context: context)
+    
+    init(recipeModel: RecipeModel!, image: UIImage? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        self.recipeModel = recipeModel
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+        
     
     private lazy var favoriteButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "notFavorite"), for: .normal)
+        button.setImage(UIImage(named: "favorite"), for: .normal)
         button.addTarget(self, action: #selector(addFavoriteRecipe), for: .touchUpInside)
         return button
     }()
     
-    private let photoImageView: UIImageView = {
+    private lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(systemName: "carrot.fill")
         return imageView
     }()
     
-    private let minutesLabel: UILabel = {
+    private lazy var minutesLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16)
-        label.textColor = .yellow
-        label.text = "20 minutes"
+        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.textColor = .white
+        label.text = "\(recipeModel.readyInMinutes ?? 0) minutes"
         return label
     }()
     
@@ -35,17 +47,17 @@ class FavoriteDetailViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
-        view.layer.cornerRadius = 16
+        view.layer.cornerRadius = 26
         return view
     }()
     
-    private let nameRecipeLabel: UILabel = {
+    private lazy var nameRecipeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 18, weight: .semibold)
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.text = "Seblak Bandung"
+        label.text = "\(recipeModel.title)"
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
@@ -66,7 +78,7 @@ class FavoriteDetailViewController: UIViewController {
     private lazy var stepsButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Steps", for: .normal)
+        button.setTitle("Recipe", for: .normal)
         button.layer.cornerRadius = 8
         button.backgroundColor = .white
         button.setTitleColor(.black, for: .normal)
@@ -96,10 +108,15 @@ class FavoriteDetailViewController: UIViewController {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.backgroundColor = .white
-        textView.font = .systemFont(ofSize: 16)
+        textView.font = .systemFont(ofSize: 18)
         textView.isHidden = false
         textView.isEditable = false
-        textView.text = recipeModel.summary
+        textView.text = recipeModel.summary?
+            .replacingOccurrences(of: "<b>", with: "")
+            .replacingOccurrences(of: "</b>", with: "")
+            .replacingOccurrences(of: "</a>", with: "")
+            .replacingOccurrences(of: "a href=", with: "")
+        textView.dataDetectorTypes = .all
         return textView
     }()
     
@@ -125,7 +142,7 @@ class FavoriteDetailViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
+        stackView.distribution = .fill
         stackView.spacing = 20
         stackView.alignment = .leading
         return stackView
@@ -134,10 +151,16 @@ class FavoriteDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         stepsScrollView.delegate = self
-        
         view.backgroundColor = .white
+        configure(id: recipeModel.id)
+        
         setupConstraints()
         addStepsModel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        favoriteButton.setImage(favoriteOrNotFavotite(), for: .normal)
     }
     
     @objc private func showDetail(_ sender: UIButton) {
@@ -161,26 +184,114 @@ class FavoriteDetailViewController: UIViewController {
         }
     }
     
+    func configure(id: Int) {
+        DispatchQueue.main.async {
+            RecipesManager().fetchImage(id: id, size: .size636x393) { image in
+                self.photoImageView.image = image
+            }
+        }
+    }
+    
     @objc private func addFavoriteRecipe(_ sender: UIButton) {
         if sender.currentImage == UIImage(named: "notFavorite") {
             sender.setImage(UIImage(named: "favorite"), for: .normal)
+            saveNewRecipe()
         } else {
             sender.setImage(UIImage(named: "notFavorite"), for: .normal)
+            removeRecipe()
+        }
+    }
+    
+    func favoriteOrNotFavotite() -> UIImage {
+        let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+        
+        do {
+            let fetchResult = try self.context.fetch(request)
+            if fetchResult.count > 0 {
+                
+                return UIImage(named: "favorite") ?? UIImage()
+            } else {
+                return UIImage(named: "notFavorite") ?? UIImage()
+            }
+        } catch let error {
+            print("error: \(error)")
+        }
+        return UIImage()
+    }
+    
+    func saveNewRecipe() {
+        context.perform {
+            let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+            
+            do {
+                let fetchResult = try self.context.fetch(request)
+                if fetchResult.count > 0 {
+                    assert(fetchResult.count == 1, "Duplicate has been found in DB!")
+                } else {
+                    self.recipe.title = self.recipeModel.title
+                    self.recipe.readyInMinutes = Int64(self.recipeModel.readyInMinutes ?? 0)
+                    self.recipe.aggregateLikes = Int64(self.recipeModel.aggregateLikes ?? 0)
+                    self.recipe.id = Int64(self.recipeModel.id)
+                    self.recipe.summary = self.recipeModel.summary
+                    self.recipe.servings = Int64(self.recipeModel.servings ?? 0)
+                    RecipesManager().fetchImage(id: self.recipeModel.id, size: .size480x360) { image in
+                        let data = image.jpegData(compressionQuality: .zero)
+                        self.recipe.image = data
+                    }
+                    do {
+                        try self.context.save()
+                    } catch {
+                        print(error)
+                    }
+                }
+            } catch let error {
+                print("error: \(error)")
+            }
+        }
+    }
+    
+    func removeRecipe() {
+        context.perform {
+            let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+            
+            do {
+                let fetchResult = try self.context.fetch(request)
+                if fetchResult.count > 0 {
+                    assert(fetchResult.count == 1, "Duplicate has been found in DB!")
+                    self.context.delete(fetchResult[0])
+                    
+                    do {
+                        try self.context.save()
+                    } catch {
+                        print(error)
+                    }
+                }
+            } catch let error {
+                print("error: \(error)")
+            }
         }
     }
     
     private func addStepsModel() {
         stepsStackView.addArrangedSubview(titleLabel)
         
+        guard recipeModel.analyzedInstructions?.count ?? 0 > 0 else { return }
         for step in recipeModel.analyzedInstructions?[0].steps ?? [] {
             lazy var stepLabel: UILabel = {
                 let label = UILabel()
+                var ingridients: [String] = []
+                step.ingredients.forEach { ingridient in
+                    ingridients.append(ingridient.name)
+                }
                 label.translatesAutoresizingMaskIntoConstraints = false
-                label.font = .systemFont(ofSize: 16, weight: .medium)
-                let textLabel = NSMutableAttributedString(string: "Step: \(step.number)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18, weight: .semibold)])
-                textLabel.append(NSMutableAttributedString(string: "\(step.step)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]))
-                textLabel.append(NSMutableAttributedString(string: "Ingredients: ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16, weight: .semibold)]))
-                textLabel.append(NSMutableAttributedString(string: "\(step.ingredients[0].name)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]))
+                label.font = .systemFont(ofSize: 18, weight: .medium)
+                let textLabel = NSMutableAttributedString(string: "Step: \(step.number)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 20, weight: .semibold)])
+                textLabel.append(NSMutableAttributedString(string: "\(step.step)\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18)]))
+                textLabel.append(NSMutableAttributedString(string: "Ingredients: ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18, weight: .semibold)]))
+                textLabel.append(NSMutableAttributedString(string: "\(ingridients.joined(separator: ", "))", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18)]))
                 label.attributedText = textLabel
                 label.numberOfLines = 0
                 return label
@@ -205,7 +316,7 @@ class FavoriteDetailViewController: UIViewController {
         
         
         NSLayoutConstraint.activate([
-            photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
+            photoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: -100),
             photoImageView.leftAnchor.constraint(equalTo: view.leftAnchor),
             photoImageView.rightAnchor.constraint(equalTo: view.rightAnchor),
             photoImageView.heightAnchor.constraint(equalToConstant: view.frame.width),
@@ -213,7 +324,7 @@ class FavoriteDetailViewController: UIViewController {
             minutesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             minutesLabel.bottomAnchor.constraint(equalTo: headingView.topAnchor, constant: -20),
             
-            headingView.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -(1/3)*view.frame.width),
+            headingView.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -(1/4)*view.frame.width),
             headingView.leftAnchor.constraint(equalTo: view.leftAnchor),
             headingView.rightAnchor.constraint(equalTo: view.rightAnchor),
             headingView.heightAnchor.constraint(equalToConstant: 100),
@@ -235,12 +346,12 @@ class FavoriteDetailViewController: UIViewController {
             informationTextView.topAnchor.constraint(equalTo: headingView.bottomAnchor),
             informationTextView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
             informationTextView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
-            informationTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            informationTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             
             stepsScrollView.topAnchor.constraint(equalTo: headingView.bottomAnchor),
             stepsScrollView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
             stepsScrollView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
-            stepsScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            stepsScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             stepsStackView.topAnchor.constraint(equalTo: stepsScrollView.topAnchor),
             stepsStackView.leftAnchor.constraint(equalTo: stepsScrollView.leftAnchor),

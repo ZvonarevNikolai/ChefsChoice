@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct Recipes {
     
@@ -25,7 +26,7 @@ struct Recipes {
 struct RecipeModel {
     let id: Int
     let title: String
-    let image: String
+    let image: String?
     let preparationMinutes: Int?
     let readyInMinutes: Int?
     let veryHealthy: Bool?
@@ -33,6 +34,8 @@ struct RecipeModel {
     let servings: Int?
     let analyzedInstructions: [AnalyzedInstructions]?
     let summary: String?
+    
+    let photo: Data?
 }
 
 
