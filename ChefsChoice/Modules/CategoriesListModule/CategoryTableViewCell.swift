@@ -7,15 +7,17 @@
 
 import UIKit
 
-class CustomCell: UITableViewCell {
+class CategoryTableViewCell: UITableViewCell {
 
-    static let identifier = "CustomCell"
+    static let identifier = "CategoryTableViewCell"
 
     private let recipeImageView: UIImageView = {
         let iv = UIImageView()
-        iv.contentMode = .scaleAspectFit
+        iv.contentMode = .scaleAspectFill
         iv.image = UIImage(systemName: "questionmark")
         iv.tintColor = .label
+        iv.layer.cornerRadius = 6
+        iv.layer.masksToBounds = true
         return iv
     }()
     
@@ -23,8 +25,8 @@ class CustomCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .label
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 24, weight: .medium)
-        label.text = "Error"
+        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.numberOfLines = 3
         return label
     }()
     
@@ -37,9 +39,12 @@ class CustomCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configure(with image: UIImage, and label: String) {
-        self.recipeImageView.image = image
-        self.recipeLabel.text = label
+    public func configure(model: RecipeModel) {
+        self.recipeLabel.text = model.title
+    }
+    
+    public func updateImage(image: UIImage) {
+        recipeImageView.image = image
     }
     
     private func setupUI() {

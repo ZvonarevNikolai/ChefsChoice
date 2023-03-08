@@ -161,6 +161,12 @@ class DetailViewController: UIViewController {
         view.backgroundColor = .white
         setupConstraints()
         addStepsModel()
+        DispatchQueue.main.async {
+            RecipesManager().fetchImage(id: self.recipeModel.id, size: .size556x370) { image in
+                self.photoImageView.image = image
+            }
+        }
+        
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.backgroundColor = .clear
         navigationController?.navigationBar.tintColor = .white

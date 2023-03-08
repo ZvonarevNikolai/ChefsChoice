@@ -220,7 +220,27 @@ extension RecipesViewController: UICollectionViewDelegate {
                 detailVC.configure(id: recipe.id)
             }
         case .category(_):
-            print(indexPath)
+            switch indexPath.row {
+            case 0:
+                dataManager?.fetchRecipe(
+                    category: .dessert, sort: .random, number: 20,
+                    completion: { result in
+                        switch result {
+                        case .success(let success):
+                            DispatchQueue.main.async {
+                                let categoriesVC = CategoriesListViewController(model: success, recipeImage: nil)
+                                self.navigationController?.pushViewController(categoriesVC, animated: true)
+                            }
+                        case .failure(let failure):
+                            print(failure.localizedDescription)
+                        }
+                    })
+            case 1:
+                print("Soups")
+            default:
+                break
+            }
+            
         case .random(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
             
