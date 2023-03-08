@@ -157,7 +157,6 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        manager = RecipesManager()
         stepsScrollView.delegate = self
         view.backgroundColor = .white
         setupConstraints()
