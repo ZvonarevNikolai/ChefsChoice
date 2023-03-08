@@ -9,9 +9,12 @@ final class MainTabBarController: UITabBarController {
     }
     
     private func configureMainTabBar() {
+        view.backgroundColor = .systemBackground
+        tabBar.tintColor = .black
+        
         let recipesVC = createNavigationVC(
             rootVC: RecipesViewController(),
-            title: "Chef's Choise", imageSystemName: "swift")
+            title: "Chef's Choise", imageSystemName: "frying.pan")
 
         let favoriteVC = createNavigationVC(
             rootVC: FavoriteViewController(),
@@ -19,7 +22,7 @@ final class MainTabBarController: UITabBarController {
             imageSystemName: "star.fill")
 
         let searchVC = createNavigationVC(
-            rootVC: SearchVC(), title: "Search", imageSystemName: "search")
+            rootVC: SearchVC(), title: "Search", imageSystemName: "magnifyingglass")
         viewControllers = [recipesVC, searchVC, favoriteVC]
 
     }
