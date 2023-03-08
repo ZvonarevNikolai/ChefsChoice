@@ -158,6 +158,11 @@ class FavoriteDetailViewController: UIViewController {
         addStepsModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        favoriteButton.setImage(favoriteOrNotFavotite(), for: .normal)
+    }
+    
     @objc private func showDetail(_ sender: UIButton) {
         switch sender.tag {
         case 1:
@@ -195,6 +200,24 @@ class FavoriteDetailViewController: UIViewController {
             sender.setImage(UIImage(named: "notFavorite"), for: .normal)
             removeRecipe()
         }
+    }
+    
+    func favoriteOrNotFavotite() -> UIImage {
+        let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %d", self.recipeModel.id)
+        
+        do {
+            let fetchResult = try self.context.fetch(request)
+            if fetchResult.count > 0 {
+                
+                return UIImage(named: "favorite") ?? UIImage()
+            } else {
+                return UIImage(named: "notFavorite") ?? UIImage()
+            }
+        } catch let error {
+            print("error: \(error)")
+        }
+        return UIImage()
     }
     
     func saveNewRecipe() {

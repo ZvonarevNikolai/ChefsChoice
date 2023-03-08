@@ -225,7 +225,7 @@ class DetailViewController: UIViewController {
                         let data = image.jpegData(compressionQuality: .zero)
                         self.recipe.image = data
                     }
-                    //self.analyzedInstructions = self.recipeModel.analyzedInstructions
+                    
                     do {
                         try self.context.save()
                     } catch {
