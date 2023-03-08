@@ -50,7 +50,7 @@ final class PopularCollectionViewCell: UICollectionViewCell {
     }
     
     func setupView() {
-        backgroundColor = .systemBackground
+        backgroundColor = UIColor(hexString: "E9F8F9")
         addSubview(titleLabelView)
         addSubview(popularImageView)
     }

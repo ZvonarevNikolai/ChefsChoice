@@ -161,6 +161,7 @@ class DetailViewController: UIViewController {
         view.backgroundColor = .white
         setupConstraints()
         addStepsModel()
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     override func viewWillAppear(_ animated: Bool) {

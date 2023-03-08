@@ -13,7 +13,7 @@ class RandomCollectionViewCell: UICollectionViewCell {
     
     private let randomRecipeImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFill
         imageView.image = UIImage(named: "recipe1")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -31,6 +31,7 @@ class RandomCollectionViewCell: UICollectionViewCell {
     }
     
     func setupView() {
+        backgroundColor = UIColor(hexString: "E9F8F9")
         clipsToBounds = true
         layer.cornerRadius = 2
         addSubview(randomRecipeImageView)

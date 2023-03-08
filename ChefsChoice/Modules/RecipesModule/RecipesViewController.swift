@@ -15,6 +15,7 @@ final class RecipesViewController: UIViewController {
         let collectionView = UICollectionView(
             frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.bounces = false
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -37,9 +38,11 @@ final class RecipesViewController: UIViewController {
         setConstraints()
         setDelegates()
         setUpNavBar()
+        view.backgroundColor = UIColor(hexString: "E9F8F9")
+        navigationController?.navigationBar.backgroundColor = UIColor(hexString: "E9F8F9")
         dataManager = RecipesManager()
         categoryRecipes = dataManager?.categories ?? []
-        ProgressHUD.show()
+        ProgressHUD.showSucceed()
         dataManager?.fetchRecipe(sort: .popularity) { [weak self] result in
             switch result {
             case .success(let success):
@@ -55,9 +58,11 @@ final class RecipesViewController: UIViewController {
         dataManager?.fetchRecipe(sort: .random) { [weak self] result in
             switch result {
             case .success(let success):
+                ProgressHUD.showSucceed()
                 self?.randomRecipes = success
                 self?.collectionView.reloadData()
             case .failure(let failure):
+                ProgressHUD.dismiss()
                 print(failure.localizedDescription)
             }
         }
@@ -215,7 +220,7 @@ extension RecipesViewController: UICollectionViewDelegate {
                 detailVC.configure(id: recipe.id)
             }
         case .category(_):
-            print("category")
+            print(indexPath)
         case .random(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
             
@@ -316,3 +321,24 @@ extension RecipesViewController {
         ])
     }
 }
+
+    
+    extension UIColor {
+        convenience init(hexString: String) {
+            let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+            var int = UInt64()
+            Scanner(string: hex).scanHexInt64(&int)
+            let a, r, g, b: UInt64
+            switch hex.count {
+            case 3: // RGB (12-bit)
+                (a, r, g, b) = (255, int >>  17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+            case 6: // RGB (24-bit)
+                (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+            case 8: // ARGB (32-bit)
+                (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+            default:
+                (a, r, g, b) = (255, 0, 0, 0)
+            }
+            self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
+        }
+    }

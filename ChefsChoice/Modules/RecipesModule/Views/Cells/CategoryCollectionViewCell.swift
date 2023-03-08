@@ -13,7 +13,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     
     private let categoryImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "categoryRecipe")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -40,7 +40,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupView() {
-        backgroundColor = .systemBackground
+        backgroundColor = UIColor(hexString: "E9F8F9")
         layer.cornerRadius = 10
         addSubview(categoryLabel)
         addSubview(categoryImageView)

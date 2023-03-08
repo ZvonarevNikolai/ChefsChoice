@@ -60,7 +60,7 @@ final class RecipesManager {
               readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
 
-        .init(id: 4, title: "Spaguetti", image: "spaguetti",
+        .init(id: 4, title: "Spaghetti", image: "spaghetti",
               preparationMinutes: 0, readyInMinutes: 0, veryHealthy: false,
               aggregateLikes: 0, servings: 0, analyzedInstructions: nil,
               summary: nil, photo: nil),
