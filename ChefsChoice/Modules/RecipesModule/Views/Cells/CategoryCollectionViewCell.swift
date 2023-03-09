@@ -51,6 +51,10 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         categoryImageView.image = UIImage(named: imageName)
     }
     
+    func getName() -> String {
+        return categoryLabel.text!
+    }
+    
     private func setConstraints() {
         NSLayoutConstraint.activate([
             categoryLabel.leadingAnchor.constraint(

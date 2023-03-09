@@ -109,6 +109,7 @@ final class RecipesViewController: UIViewController {
     
     @objc private func searhDidTap() {
         let searchController = SearchVC()
+        searchController.passedRecipes = sections[2].recipes
         let navVC = UINavigationController(rootViewController: searchController)
         present(navVC, animated: true)
     }
