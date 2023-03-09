@@ -35,6 +35,7 @@ class RecipeTableViewCell: UITableViewCell {
     let ratingTitleLabel                = UILabel()
     let ratingArray: [UIImageView]      = []
     
+    var passedRecipe: RecipeModel?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -64,6 +65,10 @@ class RecipeTableViewCell: UITableViewCell {
         
     }
     
+    func configureCell(withName name: String, image: String) {
+        recipeNameLabel.text = name
+        recipeImageView.image = UIImage(imageLiteralResourceName: image)
+    }
     
     //MARK: - UI setup
     func setupUI() {

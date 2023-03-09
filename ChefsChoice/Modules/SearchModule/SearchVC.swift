@@ -53,14 +53,16 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
                                                     return layout
                                                   }())
     
-    private var categoryItems                      = [
-                                                        ("Desserts", "cupcake"),
-                                                        ("Soups", "hot-soup"),
-                                                        ("Salads", "salad"),
-                                                        ("Seafood", "seafood"),
-                                                        ("Spaghetti", "spaghetti"),
-                                                        ("Steak", "steak")
-                                                    ]
+//    private var categoryItems                      = [
+//                                                        ("Desserts", "cupcake"),
+//                                                        ("Soups", "hot-soup"),
+//                                                        ("Salads", "salad"),
+//                                                        ("Seafood", "seafood"),
+//                                                        ("Spaghetti", "spaghetti"),
+//                                                        ("Steak", "steak")
+//                                                    ]
+    
+    private let categoryItems = RecipesManager().categories
     
     private var cookingTimeStack                   = UIStackView()
     private var cookingTitleLabel                  = UILabel()
@@ -100,7 +102,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         
         categoryGrid.dataSource = self
         categoryGrid.delegate = self
-             
+        navigationController?.navigationBar.isHidden = true
     }
     
     
@@ -135,7 +137,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     func resetUI() {
         ratingButtonArray.forEach{$0.setBackgroundImage(UIImage(systemName: "star"), for: .normal)}
         // no selection for cell
-        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{$0.isSelected = false}
+        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{$0.backgroundColor = .clear}
     }
     
     // sets up main stack view
@@ -195,7 +197,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         filterTitleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         filterTitleButton.isUserInteractionEnabled = false
         filterTitleButton.addTarget(self, action: #selector(hideShowFilterViews), for: .touchUpInside)
-//     
+//
 //        filterTitleButton.layer.borderWidth = 1
 //        filterTitleButton.layer.borderColor = UIColor.black.cgColor
     }
@@ -331,13 +333,19 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         view.addSubview(healthyTypeTrueButton)
         view.addSubview(healthyTypeFalseButton)
         
+        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{ button in
+            button.setTitleColor(.label, for: .normal)
+            button.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
+            button.layer.cornerRadius = 5
+        }
+        
         healthyTypeTrueButton.setTitle("Healthy", for: .normal)
-        healthyTypeTrueButton.setTitleColor(.label, for: .normal)
+        //healthyTypeTrueButton.setTitleColor(.label, for: .normal)
         healthyTypeTrueButton.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
         
         healthyTypeFalseButton.setTitle("Not Healthy", for: .normal)
-        healthyTypeFalseButton.setTitleColor(.label, for: .normal)
-        healthyTypeFalseButton.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
+        //healthyTypeFalseButton.setTitleColor(.label, for: .normal)
+       // healthyTypeFalseButton.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
     }
 
     func setupHealthyTypeStackView() {
@@ -348,6 +356,9 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         
         let hStack = UIStackView()
         hStack.axis = .horizontal
+        hStack.contentMode = .center
+        hStack.spacing = 10
+        hStack.distribution = .fillEqually
         [healthyTypeTrueButton, healthyTypeFalseButton].forEach{hStack.addArrangedSubview($0)}
         
         healthyTypeStackView.addArrangedSubview(healthyTypeTitleLabel)
@@ -462,6 +473,29 @@ extension SearchVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         "Search results"
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath)
+        if let recipe = passedRecipes?[indexPath.row] {
+            let detailVC = DetailViewController(recipeModel: recipe)
+            DispatchQueue.main.async {
+                self.navigationController?.pushViewController(detailVC, animated: true)
+                detailVC.configure(id: recipe.id)
+            }
+        }
+        
+
+//        let cell = tableView.cellForRow(at: indexPath) as? RecipeTableViewCell
+//        let recipe = cell?.passedRecipe
+//
+//        let detailVC = DetailViewController(recipeModel: recipe)
+//        DispatchQueue.main.async {
+//            self.navigationController?.pushViewController(detailVC, animated: true)
+//            //detailVC.configure(id: recipe.id)
+//            self.dismiss(animated: true)
+//        }
+    }
+    
     func configureTableView() {
 
         view.addSubview(tableView)
@@ -490,16 +524,17 @@ extension SearchVC: UITableViewDelegate, UITableViewDataSource {
 extension SearchVC: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width/2, height: collectionView.frame.width/2)
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.width/2)
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        5
+        categoryItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "gridCell", for: indexPath) as! CategoryCollectionViewCell
-        cell.configureCell(categoryName: categoryItems[indexPath.item].0, imageName: categoryItems[indexPath.item].1)
+        cell.configureCell(categoryName: categoryItems[indexPath.row].title, imageName: categoryItems[indexPath.row].image!)
         cell.layer.borderColor = UIColor.systemOrange.cgColor
         cell.layer.borderWidth = 5
         
@@ -511,16 +546,22 @@ extension SearchVC: UICollectionViewDelegateFlowLayout, UICollectionViewDataSour
             cell.layer.borderColor = UIColor.red.cgColor
             selectedCategory = cell.getName().lowercased()
         }
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        return true
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        print(indexPath)
         if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCollectionViewCell {
             cell.layer.borderColor = UIColor.systemOrange.cgColor
-            
         }
     }
 }
-
-//MARK: - SliderDelegate
-
 

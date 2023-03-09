@@ -20,6 +20,14 @@ final class RecipesViewController: UIViewController {
         return collectionView
     }()
     
+    private let searchBar: UISearchBar = {
+        let bar = UISearchBar()
+        bar.placeholder = "Search recipe"
+        bar.layer.cornerRadius = 8
+        bar.layer.masksToBounds = true
+        return bar
+    }()
+    
     private var dataManager: RecipesManager?
     
     private var popularRecipes = [RecipeModel]()
@@ -35,18 +43,22 @@ final class RecipesViewController: UIViewController {
          .random(randomRecipes)]
     }
     
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setConstraints()
         setDelegates()
-        setUpNavBar()
+        setUpSearchBar()
         view.backgroundColor = .systemBackground
         dataManager = RecipesManager()
         categories = dataManager?.categories ?? []
         ProgressHUD.showSucceed()
         updateRecipes()
     }
+    
+    // MARK: - Appearance
     
     private func setupViews() {
         view.backgroundColor = .systemBackground
@@ -73,11 +85,10 @@ final class RecipesViewController: UIViewController {
         collectionView.dataSource = self
     }
     
-    private func setUpNavBar() {
-        let searchItem = UIBarButtonItem(
-            barButtonSystemItem: .search, target: self,
-            action: #selector(searhDidTap))
-        navigationItem.rightBarButtonItem = searchItem
+    private func setUpSearchBar() {
+            navigationItem.titleView = searchBar
+            navigationController?.navigationBar.tintColor = .systemBlue
+            searchBar.delegate = self
     }
     
     private func updateRecipes() {
@@ -109,12 +120,35 @@ final class RecipesViewController: UIViewController {
             }
         }
     }
+}
+
+extension RecipesViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Cancel", style: .done,
+            target: self, action: #selector(cancelButtonDidTap))
+    }
     
-    @objc private func searhDidTap() {
-        let searchController = SearchVC()
-        searchController.passedRecipes = sections[2].recipes
-        let navVC = UINavigationController(rootViewController: searchController)
-        present(navVC, animated: true)
+    @objc private func cancelButtonDidTap() {
+        searchBar.text = nil
+        navigationItem.rightBarButtonItem = nil
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        navigationItem.rightBarButtonItem = nil
+        guard let text = searchBar.text else { return }
+        
+        dataManager?.fetchRecipe(word: text, sort: .popularity,
+                                 completion: { result in
+            switch result {
+            case .success(let recipes):
+                print(recipes)
+            case .failure(_):
+                print("error")
+            }
+        })
+        searchBar.resignFirstResponder()
     }
 }
 
