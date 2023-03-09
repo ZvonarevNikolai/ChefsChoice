@@ -40,7 +40,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupView() {
-        backgroundColor = UIColor(hexString: "E9F8F9")
+        backgroundColor = .systemBackground
         layer.cornerRadius = 10
         addSubview(categoryLabel)
         addSubview(categoryImageView)

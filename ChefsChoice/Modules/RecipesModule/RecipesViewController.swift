@@ -38,34 +38,11 @@ final class RecipesViewController: UIViewController {
         setConstraints()
         setDelegates()
         setUpNavBar()
-        view.backgroundColor = UIColor(hexString: "E9F8F9")
-        navigationController?.navigationBar.backgroundColor = UIColor(hexString: "E9F8F9")
+        view.backgroundColor = .systemBackground
         dataManager = RecipesManager()
         categoryRecipes = dataManager?.categories ?? []
         ProgressHUD.showSucceed()
-        dataManager?.fetchRecipe(sort: .popularity) { [weak self] result in
-            switch result {
-            case .success(let success):
-                ProgressHUD.dismiss()
-                self?.popularRecipes = success
-                self?.collectionView.reloadData()
-            case .failure(let failure):
-                ProgressHUD.dismiss()
-                print(failure.localizedDescription)
-            }
-        }
-        
-        dataManager?.fetchRecipe(sort: .random) { [weak self] result in
-            switch result {
-            case .success(let success):
-                ProgressHUD.showSucceed()
-                self?.randomRecipes = success
-                self?.collectionView.reloadData()
-            case .failure(let failure):
-                ProgressHUD.dismiss()
-                print(failure.localizedDescription)
-            }
-        }
+        updateRecipes()
     }
     
     private func setupViews() {
@@ -97,14 +74,42 @@ final class RecipesViewController: UIViewController {
         let searchItem = UIBarButtonItem(
             barButtonSystemItem: .search, target: self,
             action: #selector(searhDidTap))
-        
         navigationItem.rightBarButtonItem = searchItem
+    }
+    
+    private func updateRecipes() {
+        dataManager?.fetchRecipe(sort: .popularity) { [weak self] result in
+            switch result {
+            case .success(let success):
+                ProgressHUD.dismiss()
+                self?.popularRecipes = success
+                DispatchQueue.main.async {
+                    self?.collectionView.reloadData()
+                }
+            case .failure(let failure):
+                ProgressHUD.dismiss()
+                print(failure.localizedDescription)
+            }
+        }
+        
+        dataManager?.fetchRecipe(sort: .random) { [weak self] result in
+            switch result {
+            case .success(let success):
+                ProgressHUD.showSucceed()
+                self?.randomRecipes = success
+                DispatchQueue.main.async {
+                    self?.collectionView.reloadData()
+                }
+            case .failure(let failure):
+                ProgressHUD.dismiss()
+                print(failure.localizedDescription)
+            }
+        }
     }
     
     @objc private func searhDidTap() {
         let searchController = SearchVC()
         let navVC = UINavigationController(rootViewController: searchController)
-        
         present(navVC, animated: true)
     }
 }
@@ -129,14 +134,20 @@ extension RecipesViewController {
         }
     }
     
-    private func createLayoutSection(group: NSCollectionLayoutGroup, behavior: UICollectionLayoutSectionOrthogonalScrollingBehavior, interGroupSpacing: CGFloat, supplementaryItems: [NSCollectionLayoutBoundarySupplementaryItem], contentInsets: Bool) -> NSCollectionLayoutSection {
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = behavior
-        section.interGroupSpacing = interGroupSpacing
-        section.boundarySupplementaryItems = supplementaryItems
-        section.supplementariesFollowContentInsets = contentInsets
-        return section
-    }
+    private func createLayoutSection(
+        group: NSCollectionLayoutGroup,
+        behavior: UICollectionLayoutSectionOrthogonalScrollingBehavior,
+        interGroupSpacing: CGFloat,
+        supplementaryItems: [NSCollectionLayoutBoundarySupplementaryItem],
+        contentInsets: Bool) -> NSCollectionLayoutSection {
+            
+            let section = NSCollectionLayoutSection(group: group)
+            section.orthogonalScrollingBehavior = behavior
+            section.interGroupSpacing = interGroupSpacing
+            section.boundarySupplementaryItems = supplementaryItems
+            section.supplementariesFollowContentInsets = contentInsets
+            return section
+        }
     
     // Popular
     private func createPopularSection() -> NSCollectionLayoutSection {
@@ -208,15 +219,16 @@ extension RecipesViewController {
 //MARK: - UICollectionViewDelegate
 
 extension RecipesViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+    func collectionView(_ collectionView: UICollectionView,
+                        didSelectItemAt indexPath: IndexPath) {
         switch sections[indexPath.section] {
         case .popular(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
             
             let detailVC = DetailViewController(recipeModel: recipe)
             DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailVC, animated: true)
+                self.navigationController?.pushViewController(detailVC,
+                                                              animated: true)
                 detailVC.configure(id: recipe.id)
             }
         case .category(_):
@@ -228,8 +240,10 @@ extension RecipesViewController: UICollectionViewDelegate {
                         switch result {
                         case .success(let success):
                             DispatchQueue.main.async {
-                                let categoriesVC = CategoriesListViewController(model: success, recipeImage: nil)
-                                self.navigationController?.pushViewController(categoriesVC, animated: true)
+                                let categoriesVC = CategoriesListViewController(
+                                    model: success, recipeImage: nil)
+                                self.navigationController?.pushViewController(
+                                    categoriesVC, animated: true)
                             }
                         case .failure(let failure):
                             print(failure.localizedDescription)
@@ -256,7 +270,6 @@ extension RecipesViewController: UICollectionViewDelegate {
 //MARK: - IUCollectionViewDataSource
 
 extension RecipesViewController: UICollectionViewDataSource {
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         sections.count
     }
@@ -274,7 +287,7 @@ extension RecipesViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             dataManager?.fetchImage(id: popularRecipes[indexPath.row].id,
-                                   size: .size556x370) { image in
+                                    size: .size556x370) { image in
                 DispatchQueue.main.async {
                     cell.addImageToCell(image: image)
                 }
@@ -301,7 +314,7 @@ extension RecipesViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             dataManager?.fetchImage(id: randomRecipes[indexPath.row].id,
-                                   size: .size636x393) { image in
+                                    size: .size636x393) { image in
                 DispatchQueue.main.async {
                     cell.addImageToCell(image: image)
                 }
@@ -310,8 +323,9 @@ extension RecipesViewController: UICollectionViewDataSource {
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             guard let header = collectionView.dequeueReusableSupplementaryView(
@@ -341,24 +355,3 @@ extension RecipesViewController {
         ])
     }
 }
-
-    
-    extension UIColor {
-        convenience init(hexString: String) {
-            let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-            var int = UInt64()
-            Scanner(string: hex).scanHexInt64(&int)
-            let a, r, g, b: UInt64
-            switch hex.count {
-            case 3: // RGB (12-bit)
-                (a, r, g, b) = (255, int >>  17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-            case 6: // RGB (24-bit)
-                (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-            case 8: // ARGB (32-bit)
-                (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-            default:
-                (a, r, g, b) = (255, 0, 0, 0)
-            }
-            self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
-        }
-    }

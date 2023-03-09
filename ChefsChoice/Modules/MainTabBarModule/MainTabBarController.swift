@@ -36,6 +36,7 @@ final class MainTabBarController: UITabBarController {
             navVC.title = title
             navVC.tabBarItem.image = UIImage(systemName: imageSystemName, withConfiguration: UIImage.SymbolConfiguration(weight: .semibold))
             navVC.navigationBar.prefersLargeTitles = true
+            navVC.navigationBar.tintColor = .label
             return navVC
         }
 }

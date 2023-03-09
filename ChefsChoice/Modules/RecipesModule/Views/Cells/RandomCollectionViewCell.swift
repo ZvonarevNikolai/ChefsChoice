@@ -31,7 +31,7 @@ class RandomCollectionViewCell: UICollectionViewCell {
     }
     
     func setupView() {
-        backgroundColor = UIColor(hexString: "E9F8F9")
+        backgroundColor = .systemBackground
         clipsToBounds = true
         layer.cornerRadius = 2
         addSubview(randomRecipeImageView)

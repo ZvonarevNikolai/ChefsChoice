@@ -166,10 +166,6 @@ class DetailViewController: UIViewController {
                 self.photoImageView.image = image
             }
         }
-        
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.backgroundColor = .clear
-        navigationController?.navigationBar.tintColor = .white
     }
     
     override func viewWillAppear(_ animated: Bool) {
