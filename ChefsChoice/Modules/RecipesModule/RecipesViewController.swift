@@ -227,11 +227,10 @@ extension RecipesViewController: UICollectionViewDelegate {
         switch sections[indexPath.section] {
         case .popular(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
-            
+            let detailVC = DetailViewController(recipeModel: recipe)
             DispatchQueue.main.async {
-                let detailVC = DetailViewController(recipeModel: recipe)
-                self.navigationController?.pushViewController(detailVC,
-                                                              animated: true)
+                self.navigationController?
+                    .pushViewController(detailVC, animated: true)
                 detailVC.configure(id: recipe.id)
             }
         case .category(_):
@@ -239,10 +238,10 @@ extension RecipesViewController: UICollectionViewDelegate {
             dataManager?.fetchRecipe(category: category, sort: .random,
                                      number: 20, completion: { result in
                 switch result {
-                case .success(let success):
+                case .success(let recipes):
+                    let categoryVC = CategoriesListViewController(
+                        model: recipes, recipeImage: nil)
                     DispatchQueue.main.async {
-                        let categoryVC = CategoriesListViewController(
-                            model: success, recipeImage: nil)
                         self.navigationController?
                             .pushViewController(categoryVC, animated: true)
                     }
@@ -253,9 +252,10 @@ extension RecipesViewController: UICollectionViewDelegate {
             
         case .random(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
+            let detailVC = DetailViewController(recipeModel: recipe)
             DispatchQueue.main.async {
-                let detailVC = DetailViewController(recipeModel: recipe)
-                self.navigationController?.pushViewController(detailVC, animated: true)
+                self.navigationController?
+                    .pushViewController(detailVC, animated: true)
                 detailVC.configure(id: recipe.id)
             }
         }
