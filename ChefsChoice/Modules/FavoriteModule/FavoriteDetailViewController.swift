@@ -31,6 +31,7 @@ class FavoriteDetailViewController: UIViewController {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(data: recipeModel.photo ?? Data()) 
         return imageView
     }()
     
