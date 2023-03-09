@@ -168,20 +168,17 @@ struct RecipesManager {
             for object in decodedData.results {
 
                 
-                let recipe = RecipeModel(id: object.id,
-                                         title: object.title,
-                                         image: object.image,
-                                         preparationMinutes: object.preparationMinutes,
-                                         readyInMinutes: object.readyInMinutes,
-                                         veryHealthy: object.veryHealthy,
-                                         aggregateLikes: object.aggregateLikes,
-                                         servings: object.servings,
-                                         analyzedInstructions: object.analyzedInstructions
-                                         
+                let recipe = RecipeModel(
+                    id: object.id, title: object.title, image: object.image,
+                    preparationMinutes: object.preparationMinutes,
+                    readyInMinutes: object.readyInMinutes,
+                    veryHealthy: object.veryHealthy,
+                    aggregateLikes: object.aggregateLikes,
+                    servings: object.servings,
+                    analyzedInstructions: object.analyzedInstructions,
+                    summary: object.summary, photo: nil
                 )
-
                 result.append(recipe)
-
             }
             let recipe = Recipes(results: result)
             completion(.success(recipe.getRecipes()))
