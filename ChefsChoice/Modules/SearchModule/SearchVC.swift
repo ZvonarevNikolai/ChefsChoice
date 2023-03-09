@@ -8,13 +8,17 @@
 
 /// Course of action
 /// 1. Finish UI Layout:
-///     - fix black screen bug (rearrange views)
-///     - fix preview bug
-///     - add grid
-///     - add tableview
-///     - create custom cell
-///     - add animations
-///  2. Get sample Data
+///     - fix black screen bug (rearrange views)                          DONE
+///     - fix preview bug                                                               DONE
+///     - add grid                                                                          DONE
+///     - add tableview                                                                 DONE
+///     - create custom cell                                                          DONE
+///     - add animations                                                               DONE
+///     - change height inset in filter stack
+///     - fix hide animation for smoother experience
+///     - OPTIONAL: add search bar
+///     - make UI elements functional to show and get data
+///  2. Get sample Data                                                                    DONE
 ///  3. Create model for VC to make filter functional
 ///  4. Connect to JSON module
 ///  5. Refactor View Controller into separate Views
@@ -29,42 +33,61 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: - UI Elements
     
-    var filterStackView                    = UIStackView()
-    var filterTitleButton                  = UIButton()
-    //var filterTitleLabel                   = UILabel()
+    private var filterStackView                    = UIStackView()
+    private var filterTitleButton                  = UIButton()
+    private var filterStackIsHidden                = false
+    private var filterStackTopInset: CGFloat       = 20
+ 
+    private var ratingStackView                    = UIStackView()
+    private var ratingTitleLabel                   = UILabel()
+    private var ratingButton                       = UIButton()
+    
+    private var ratingButtonArray: [UIButton]      = []
+    private var applyButton                        = UIButton()
 
-    var ratingStackView                    = UIStackView()
-    var ratingTitleLabel                   = UILabel()
-    var ratingButton                       = UIButton()
+    private var categoryStackView                  = UIStackView()
+    private var categoryTitleLabel                 = UILabel()
+    private var categoryGrid                       = UICollectionView(frame: .zero, collectionViewLayout:                                           {
+                                                    let layout = UICollectionViewFlowLayout()
+                                                    layout.scrollDirection = .horizontal
+                                                    return layout
+                                                  }())
     
-    var ratingButtonArray: [UIButton]      = []
-    var applyButton                        = UIButton()
-
-    var categoryStackView                  = UIStackView()
-    var categoryTitleLabel                 = UILabel()
-    var categoryGrid                       = UICollectionView(frame: .zero, collectionViewLayout: {
-    let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        return layout
-    }())
+    private var categoryItems                      = [
+                                                        ("Desserts", "cupcake"),
+                                                        ("Soups", "hot-soup"),
+                                                        ("Salads", "salad"),
+                                                        ("Seafood", "seafood"),
+                                                        ("Spaghetti", "spaghetti"),
+                                                        ("Steak", "steak")
+                                                    ]
     
-    var gridPlaceholder                    = UIView()
+    private var cookingTimeStack                   = UIStackView()
+    private var cookingTitleLabel                  = UILabel()
+    private var cookingTimeSlider                  = UISlider()
+    private var cookingTimeLabel                   = UILabel()
+    private var minimumCookingTime: Float          = 10
+    private var maximumCookingTime: Float          = 100
     
-    var cookingTimeStack                   = UIStackView()
-    var cookingTitleLabel                  = UILabel()
-    var cookingTimeSlider                  = UISlider()
-    var cookingTimeLabel                   = UILabel()
+    private var healthyTypeStackView               = UIStackView()
+    private var healthyTypeTitleLabel              = UILabel()
+    private var healthyTypeTrueButton              = UIButton()
+    private var healthyTypeFalseButton             = UIButton()
     
-    var healthyTypeStackView               = UIStackView()
-    var healthyTypeTitleLabel              = UILabel()
-    var healthyTypeButton                  = UIButton()
-    
-    var tableView                          = UITableView()
+    private var tableView                          = UITableView()
     
     
     //MARK: - Variables
     
+    var passedRecipes: [RecipeModel]?              = []
     
+    // these vars and methods should be refactored into Model
+    private var selectedRating: Int                = 0
+    //private var selectedCategory: CategoryRecipe   = .dessert
+    private var selectedCategory: String           = ""
+    private var selectedTimeToCook: Int            = 0
+    private var selectedHealthyType: Bool          = true
+        
     //MARK: - VC LifeCycle
     
     override func viewDidLoad() {
@@ -77,7 +100,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         
         categoryGrid.dataSource = self
         categoryGrid.delegate = self
-        tap.delegate = self
+             
     }
     
     
@@ -86,7 +109,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     func setupUI() {
        
         view.backgroundColor = .systemBackground
-        // removed [filterTitleLabel: "Filter",]  from array
+        
         let titleArray = [ratingTitleLabel: "by Rating", categoryTitleLabel: "by Category", cookingTitleLabel: "by Total Cooking Time", healthyTypeTitleLabel: "by Type"]
         
         for (key, value) in titleArray {
@@ -97,12 +120,23 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         setupFilterStackView()
         configureTableView()
         
-//        filterTitleLabel.textAlignment = .center
-//        filterTitleLabel.font = UIFont.systemFont(ofSize: 15, weight: .black)
-//        filterTitleLabel.isUserInteractionEnabled = true
-        //filterTitleLabel.addGestureRecognizer(tap)
+        updateUI()
+
     }
     
+    func updateUI() {
+        
+        //filterStackTopInset = filterStackIsHidden ? 0 : 20
+        filterStackView.layoutMargins = UIEdgeInsets(top: filterStackTopInset, left: 20, bottom: filterStackTopInset, right: 20)
+        
+    }
+    
+    
+    func resetUI() {
+        ratingButtonArray.forEach{$0.setBackgroundImage(UIImage(systemName: "star"), for: .normal)}
+        // no selection for cell
+        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{$0.isSelected = false}
+    }
     
     // sets up main stack view
     func setupFilterStackView() {
@@ -116,10 +150,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         filterStackView.alignment = .fill
         
         filterStackView.isLayoutMarginsRelativeArrangement = true
-        filterStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
-        
-        //filterStackView.addGestureRecognizer(tap)
-        
+       
         view.addSubview(filterStackView)
         
         configureFilterTitleButton()
@@ -129,10 +160,8 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         setupHealthyTypeStackView()
         
         
-        //filterStackView.addArrangedSubview(filterTitleLabel)
         filterStackView.addArrangedSubview(filterTitleButton)
         filterStackView.addArrangedSubview(ratingStackView)
-                //filterStackView.addArrangedSubview(ratingButton)
         filterStackView.addArrangedSubview(categoryStackView)
         filterStackView.addArrangedSubview(cookingTimeStack)
         filterStackView.addArrangedSubview(healthyTypeStackView)
@@ -207,10 +236,8 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     func setupRatingStackView() {
         
         configureApplyButton()
-        //сonfigureRatingButtons()
         
         ratingStackView.axis = .vertical
-        //ratingStackView.alignment = .trailing
         ratingStackView.distribution = .equalSpacing
         
         let hStack = UIStackView()
@@ -226,11 +253,11 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         starStack.distribution = .equalSpacing
         view.addSubview(starStack)
         
-    //TODO: find out how to better add buttons to stack
         for id in 1...5 {
             let newStarBTN = UIButton()
             сonfigureRatingButtons(for: newStarBTN)
             newStarBTN.tag = id
+            newStarBTN.addTarget(self, action: #selector(ratingButtonTapped(_:)), for: .touchUpInside)
             view.addSubview(newStarBTN)
             starStack.addArrangedSubview(newStarBTN)
             ratingButtonArray.append(newStarBTN)
@@ -242,20 +269,10 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func configureGridView() {
-//        view.addSubview(gridPlaceholder)
-//        gridPlaceholder.backgroundColor = .gray
-//        gridPlaceholder.translatesAutoresizingMaskIntoConstraints = false
-//
-//        NSLayoutConstraint.activate([
-//            gridPlaceholder.widthAnchor.constraint(equalToConstant: 100),
-//            gridPlaceholder.heightAnchor.constraint(equalToConstant: 200)
-//        ])
         
         view.addSubview(categoryGrid)
         
         categoryGrid.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: "gridCell")
-        //categoryGrid.backgroundColor = .black
-        
         
         categoryGrid.translatesAutoresizingMaskIntoConstraints = false
         
@@ -271,10 +288,8 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
 
         categoryStackView.axis = .vertical
         categoryStackView.addArrangedSubview(categoryTitleLabel)
-        //categoryStackView.addArrangedSubview(gridPlaceholder)
         categoryStackView.addArrangedSubview(categoryGrid)
 
-        //TODO: Add proper Grid
         categoryStackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -285,7 +300,9 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     func configureCookingTimeSlider() {
         view.addSubview(cookingTimeSlider)
         
-        // further customisation
+        cookingTimeSlider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
+        cookingTimeSlider.minimumValue = minimumCookingTime
+        cookingTimeSlider.maximumValue = maximumCookingTime
     }
 
     func configureCookingTimeLabel(){
@@ -311,10 +328,16 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     }
 
     func configureHealthyTypeButtons() {
-        view.addSubview(healthyTypeButton)
+        view.addSubview(healthyTypeTrueButton)
+        view.addSubview(healthyTypeFalseButton)
         
-        healthyTypeButton.setTitle("Healthy", for: .normal)
-        healthyTypeButton.setTitleColor(.label, for: .normal)
+        healthyTypeTrueButton.setTitle("Healthy", for: .normal)
+        healthyTypeTrueButton.setTitleColor(.label, for: .normal)
+        healthyTypeTrueButton.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
+        
+        healthyTypeFalseButton.setTitle("Not Healthy", for: .normal)
+        healthyTypeFalseButton.setTitleColor(.label, for: .normal)
+        healthyTypeFalseButton.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
     }
 
     func setupHealthyTypeStackView() {
@@ -323,33 +346,82 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         
         healthyTypeStackView.axis = .vertical
         
+        let hStack = UIStackView()
+        hStack.axis = .horizontal
+        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{hStack.addArrangedSubview($0)}
+        
         healthyTypeStackView.addArrangedSubview(healthyTypeTitleLabel)
-        healthyTypeStackView.addArrangedSubview(healthyTypeButton)
+        healthyTypeStackView.addArrangedSubview(hStack)
     }
     
+    
+   @objc func sliderValueChanged(_ sender: UISlider) {
+       
+       let minutes: Int = Int(sender.value)
+       selectedTimeToCook = minutes
+       let timeToCook: (hours: Int, minutes: Int) = (minutes / 60, (minutes % 60))
+       
+       cookingTimeLabel.text = String("\(timeToCook.hours)H \(timeToCook.minutes) M")
+    }
     
     //MARK: - Button Methods
     
     @objc func applyButtonTapped() {
         hideShowFilterViews()
+        
+        // add fetch request
+        
+        print("""
+                Request recipes with:
+                Rating: \(selectedRating)
+                Category: \(selectedCategory)
+                CookingTime: \(selectedTimeToCook)
+                Healthy: \(selectedHealthyType)
+                """)
+        resetUI()
+        // reset selectedValues
+        tableView.reloadData()
     }
     
     @objc func hideShowFilterViews() {
         filterTitleButton.isUserInteractionEnabled.toggle()
+        
         UIView.animate(withDuration: 1, delay: 0.1) { [self] in
             [ratingStackView, categoryStackView, cookingTimeStack, healthyTypeStackView].forEach {$0.isHidden.toggle()}
-//        } completion: { _ in
-//            UIView.animate(withDuration: 2, delay: 0.2) {[self] in
-//                [ratingStackView, categoryStackView, cookingTimeStack, healthyTypeStackView].forEach {$0.isHidden.toggle()}
-//            }
+            filterStackIsHidden.toggle()
+            
+            filterStackTopInset = filterStackIsHidden ? 0 : 20
+            filterStackView.layoutMargins = UIEdgeInsets(top: filterStackTopInset, left: 20, bottom: filterStackTopInset, right: 20)
+            
         }
     }
     
-    let tap = UITapGestureRecognizer(target: SearchVC.self, action: #selector(handleTap))
+    @objc func ratingButtonTapped(_ sender: UIButton){
+        
+        ratingButtonArray.forEach{$0.setBackgroundImage(UIImage(systemName: "star"), for: .normal)}
+        selectedRating = sender.tag
+        
+        for i in 0...sender.tag-1 {
+            ratingButtonArray[i].setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
+        }
+        
+    }
     
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
-         print("Hello World")
-      }
+    @objc func healthyButtonTapped(_ sender: UIButton) {
+        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{$0.isSelected = false}
+        
+        sender.isSelected = true
+        if sender == healthyTypeTrueButton {
+            
+            sender.backgroundColor = .systemGreen
+            selectedHealthyType = true
+        } else {
+            sender.backgroundColor = .systemRed
+            selectedHealthyType = false
+        }
+        
+    }
+  
 }
 
 
@@ -358,13 +430,26 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
 extension SearchVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        if let randomRecipes = passedRecipes {
+            return randomRecipes.count
+        } else {
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? RecipeTableViewCell {
             
-            return cell
+            if let randomRecipes = passedRecipes {
+                
+                cell.recipeNameLabel.text = randomRecipes[indexPath.row].title
+                
+                return cell
+            }
+            
+            
+            
+            
         }
         return UITableViewCell()
     }
@@ -414,13 +499,28 @@ extension SearchVC: UICollectionViewDelegateFlowLayout, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "gridCell", for: indexPath) as! CategoryCollectionViewCell
-        cell.configureCell(categoryName: "Seafood", imageName: "seafood")
+        cell.configureCell(categoryName: categoryItems[indexPath.item].0, imageName: categoryItems[indexPath.item].1)
         cell.layer.borderColor = UIColor.systemOrange.cgColor
         cell.layer.borderWidth = 5
         
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCollectionViewCell {
+            cell.layer.borderColor = UIColor.red.cgColor
+            selectedCategory = cell.getName().lowercased()
+        }
+    }
     
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCollectionViewCell {
+            cell.layer.borderColor = UIColor.systemOrange.cgColor
+            
+        }
+    }
 }
+
+//MARK: - SliderDelegate
+
 

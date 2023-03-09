@@ -103,6 +103,7 @@ final class RecipesViewController: UIViewController {
     
     @objc private func searhDidTap() {
         let searchController = SearchVC()
+        searchController.passedRecipes = sections[2].recipes
         let navVC = UINavigationController(rootViewController: searchController)
         
         present(navVC, animated: true)
@@ -362,3 +363,7 @@ extension RecipesViewController {
             self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
         }
     }
+
+
+
+
