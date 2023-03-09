@@ -35,28 +35,26 @@ final class RecipesManager {
     
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch"
 
-    let apiKey = "c41c14ea1b8b4d03a6c2a4247e002a40"
+    let apiKey = "37e91b1209d54ad9ad94ad2604e69fe5"
     
     let categories: [RecipeModel] = [
-        .init(id: 0, title: "Desserts", image: "cupcake", preparationMinutes: 0,
-              readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-        .init(id: 1, title: "Soups", image: "hot-soup", preparationMinutes: 0,
-              readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-
-              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-        .init(id: 2, title: "Salads", image: "salad", preparationMinutes: 0,
-              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-        .init(id: 3, title: "Seafood", image: "seafood", preparationMinutes: 0,
-              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-
-        .init(id: 4, title: "Spaghetti", image: "spaghetti",
+        .init(id: 4, title: "Main Course", image: "maincourse",
               preparationMinutes: 0, readyInMinutes: 0, veryHealthy: false,
               aggregateLikes: 0, servings: 0, analyzedInstructions: nil,
               summary: nil, photo: nil),
-        .init(id: 5, title: "Steak", image: "steak", preparationMinutes: 0,
+        .init(id: 1, title: "Soup", image: "hot-soup", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+        .init(id: 3, title: "Breakfast", image: "breakfast", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+        .init(id: 2, title: "Salad", image: "salad", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+        .init(id: 0, title: "Dessert", image: "cupcake", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+        .init(id: 5, title: "Drink", image: "drink", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil)
     ]
