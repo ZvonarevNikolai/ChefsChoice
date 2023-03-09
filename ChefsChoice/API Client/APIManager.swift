@@ -12,6 +12,7 @@ enum SortRecipe: String {
     
     case popularity
     case random
+    case time
     
 }
 
@@ -35,6 +36,7 @@ enum CategoryRecipe: String {
 
 enum Diet: String {
     case vegan = "vegan|vegetarian"
+    case keto = "ketogenic"
 }
 
 enum SizeImage: String {
@@ -100,8 +102,18 @@ struct RecipesManager {
         }
     }
     
-    func fetchRecipeFilter(category: CategoryRecipe, sort: SortRecipe, number: Int, maxReadyTime: Int, diet: Diet, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
-        let urlString = "\(recipeURL)?apiKey=\(apiKey)&type=\(category.rawValue)&diet=\(diet.rawValue)&addRecipeInformation=true&sort=\(sort.rawValue)&maxReadyTime=\(maxReadyTime)&number=\(number)"
+    func fetchRecipeFilter(category: CategoryRecipe, sort: SortRecipe, number: Int, maxReadyTime: Int, diet: Diet?, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
+      
+        var urlString = ""
+        if diet != nil {
+            
+            urlString = "\(recipeURL)?apiKey=\(apiKey)&type=\(category.rawValue)&diet=\(diet!.rawValue)&addRecipeInformation=true&sort=\(sort.rawValue)&maxReadyTime=\(maxReadyTime)&number=\(number)"
+            
+        } else {
+            urlString = "\(recipeURL)?apiKey=\(apiKey)&type=\(category.rawValue)&addRecipeInformation=true&sort=\(sort.rawValue)&maxReadyTime=\(maxReadyTime)&number=\(number)"
+            
+        }
+        
         request(with: urlString) { recipeModel in
             switch recipeModel {
             case .success(let model):
