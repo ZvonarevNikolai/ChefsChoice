@@ -17,8 +17,8 @@ enum SortRecipe: String {
 
 enum CategoryRecipe: String {
     
-    case mainСourse = "main course"
-    case sideDish = "side dish"
+    case mainСourse = "main_course"
+    case sideDish = "side_dish"
     case dessert = "dessert"
     case bread = "bread"
     case appetizer = "appetizer"
@@ -38,7 +38,6 @@ enum Diet: String {
 }
 
 enum SizeImage: String {
-    
     case size90x90 = "90x90"
     case size240x150 = "240x150"
     case size312x150 = "312x150"
@@ -115,7 +114,7 @@ struct RecipesManager {
     
     
     func fetchRecipe(category: CategoryRecipe, sort: SortRecipe, number: Int, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
-        let urlString = "\(recipeURL)?apiKey=\(apiKey)&query=\(category.rawValue)&addRecipeInformation=true&sort=\(sort.rawValue)&number=\(number)"
+        let urlString = "\(recipeURL)?apiKey=\(apiKey)&type=\(category.rawValue)&addRecipeInformation=true&sort=\(sort.rawValue)&number=\(number)"
         request(with: urlString) { recipeModel in
             switch recipeModel {
             case .success(let model):
@@ -141,19 +140,15 @@ struct RecipesManager {
                 guard let data = data else { return }
                 self.parseJSON(data) { recipe in
                     switch recipe {
-                        
                     case .success(let model):
                         completion(.success(model))
                     case .failure(let error):
                         completion(.failure(error))
                     }
                 }
-                
             }
-
         }
         task.resume()
-        
     }
     
     func parseJSON(_ recipes: Data, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
@@ -166,8 +161,6 @@ struct RecipesManager {
             var result = [RecipeModel]()
 
             for object in decodedData.results {
-
-                
                 let recipe = RecipeModel(
                     id: object.id, title: object.title, image: object.image,
                     preparationMinutes: object.preparationMinutes,
@@ -182,9 +175,6 @@ struct RecipesManager {
             }
             let recipe = Recipes(results: result)
             completion(.success(recipe.getRecipes()))
-        
-           
-            
         } catch {
             print("Error \(error.localizedDescription) ")
             completion(.failure(error))
@@ -192,11 +182,9 @@ struct RecipesManager {
     }
     
     func fetchImage(id recipe: Int, size: SizeImage, completionHandler: @escaping (UIImage)->Void) {
-    
             let urlString = "https://spoonacular.com/recipeImages/\(recipe)-\(size.rawValue).jpg"
     
             if let url = URL(string: urlString) {
-    
                 URLSession.shared.dataTask(with: url) { (data, response, error) in
                     if let data = data {
                         DispatchQueue.main.async {
@@ -205,10 +193,7 @@ struct RecipesManager {
                             }
                         }
                     }
-    
                 }.resume()
-    
             }
         }
-    
 }

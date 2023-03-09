@@ -23,12 +23,15 @@ final class RecipesViewController: UIViewController {
     private var dataManager: RecipesManager?
     
     private var popularRecipes = [RecipeModel]()
-    private var categoryRecipes = [RecipeModel]()
+    private var categories = [RecipeModel]()
     private var randomRecipes = [RecipeModel]()
+    private var categoryRescipes: [CategoryRecipe] = [
+        .mainСourse, .soup, .breakfast, .salad, .dessert, .drink
+    ]
     
     private var sections: [SectionList] {
         [.popular(popularRecipes),
-         .category(categoryRecipes),
+         .category(categories),
          .random(randomRecipes)]
     }
     
@@ -40,7 +43,7 @@ final class RecipesViewController: UIViewController {
         setUpNavBar()
         view.backgroundColor = .systemBackground
         dataManager = RecipesManager()
-        categoryRecipes = dataManager?.categories ?? []
+        categories = dataManager?.categories ?? []
         ProgressHUD.showSucceed()
         updateRecipes()
     }
@@ -214,7 +217,6 @@ extension RecipesViewController {
               elementKind: UICollectionView.elementKindSectionHeader,
               alignment: .top)
     }
-    
 }
 
 //MARK: - UICollectionViewDelegate
@@ -226,41 +228,33 @@ extension RecipesViewController: UICollectionViewDelegate {
         case .popular(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
             
-            let detailVC = DetailViewController(recipeModel: recipe)
             DispatchQueue.main.async {
+                let detailVC = DetailViewController(recipeModel: recipe)
                 self.navigationController?.pushViewController(detailVC,
                                                               animated: true)
                 detailVC.configure(id: recipe.id)
             }
         case .category(_):
-            switch indexPath.row {
-            case 0:
-                dataManager?.fetchRecipe(
-                    category: .dessert, sort: .random, number: 20,
-                    completion: { result in
-                        switch result {
-                        case .success(let success):
-                            DispatchQueue.main.async {
-                                let categoriesVC = CategoriesListViewController(
-                                    model: success, recipeImage: nil)
-                                self.navigationController?.pushViewController(
-                                    categoriesVC, animated: true)
-                            }
-                        case .failure(let failure):
-                            print(failure.localizedDescription)
-                        }
-                    })
-            case 1:
-                print("Soups")
-            default:
-                break
-            }
+            let category = categoryRescipes[indexPath.row]
+            dataManager?.fetchRecipe(category: category, sort: .random,
+                                     number: 20, completion: { result in
+                switch result {
+                case .success(let success):
+                    DispatchQueue.main.async {
+                        let categoryVC = CategoriesListViewController(
+                            model: success, recipeImage: nil)
+                        self.navigationController?
+                            .pushViewController(categoryVC, animated: true)
+                    }
+                case .failure(let failure):
+                    print(failure.localizedDescription)
+                }
+            })
             
         case .random(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
-            
-            let detailVC = DetailViewController(recipeModel: recipe)
             DispatchQueue.main.async {
+                let detailVC = DetailViewController(recipeModel: recipe)
                 self.navigationController?.pushViewController(detailVC, animated: true)
                 detailVC.configure(id: recipe.id)
             }
@@ -275,11 +269,14 @@ extension RecipesViewController: UICollectionViewDataSource {
         sections.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
         sections[section].count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch sections[indexPath.section] {
         case .popular(let popular):
             guard let cell = collectionView.dequeueReusableCell(
