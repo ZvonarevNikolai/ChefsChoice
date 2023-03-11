@@ -5,6 +5,7 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        UserDefaults.standard.set(true, forKey: "isFirst")
         configureMainTabBar()
     }
     
@@ -24,7 +25,6 @@ final class MainTabBarController: UITabBarController {
         let searchVC = createNavigationVC(
             rootVC: SearchVC(), title: "Search", imageSystemName: "magnifyingglass")
         viewControllers = [recipesVC, searchVC, favoriteVC]
-
     }
     
     private func createNavigationVC(

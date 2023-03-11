@@ -10,7 +10,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = MainTabBarController()
+        let rootVC = UserDefaults.standard.bool(forKey: "isFirst") ? MainTabBarController() : OnboardingViewController()
+        let navVC = UINavigationController(rootViewController: rootVC)
+        window.rootViewController = navVC
+        window.backgroundColor = .black
         window.makeKeyAndVisible()
         self.window = window
         

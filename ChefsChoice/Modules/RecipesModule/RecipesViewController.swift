@@ -51,7 +51,6 @@ final class RecipesViewController: UIViewController {
         setConstraints()
         setDelegates()
         setUpSearchBar()
-        view.backgroundColor = .systemBackground
         dataManager = RecipesManager()
         categories = dataManager?.categories ?? []
         ProgressHUD.showSucceed()
@@ -61,7 +60,6 @@ final class RecipesViewController: UIViewController {
     // MARK: - Appearance
     
     private func setupViews() {
-        view.backgroundColor = .systemBackground
         title = "Chef's Choise"
         view.addSubview(collectionView)
         collectionView.register(
@@ -143,7 +141,8 @@ extension RecipesViewController: UISearchBarDelegate {
                                  completion: { result in
             switch result {
             case .success(let recipes):
-                print(recipes)
+                let categoriesVC = CategoriesListViewController(model: recipes, recipeImage: nil, title: text)
+                self.navigationController?.pushViewController(categoriesVC, animated: true)
             case .failure(_):
                 print("error")
             }
@@ -274,7 +273,7 @@ extension RecipesViewController: UICollectionViewDelegate {
                 switch result {
                 case .success(let recipes):
                     let categoryVC = CategoriesListViewController(
-                        model: recipes, recipeImage: nil)
+                        model: recipes, recipeImage: nil, title: category.title)
                     DispatchQueue.main.async {
                         self.navigationController?
                             .pushViewController(categoryVC, animated: true)

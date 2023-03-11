@@ -1,10 +1,3 @@
-//
-//  OnboardingViewController.swift
-//  ChefsChoice
-//
-//  Created by Кащенко on 2.03.23.
-//
-
 import UIKit
 
 final class OnboardingViewController: UIViewController {
@@ -72,18 +65,23 @@ final class OnboardingViewController: UIViewController {
     
     
     @objc private func pageControllDidChange(_ sender: UIPageControl) {
-        let offSetX = view.frame.size.width * CGFloat(pageControl.currentPage)
-        pageScrollView.setContentOffset(CGPoint(x: offSetX, y: 0), animated: true)
+        showNextView()
     }
     
     @objc func nextButtonPressed() {
-        currentPage += 1
-        if currentPage >= pageControl.numberOfPages {
-            currentPage = 0
+        showNextView()
+    }
+    
+    private func showNextView() {
+        if currentPage < pageControl.numberOfPages - 1 {
+            currentPage += 1
+            let offsetX = view.frame.size.width * CGFloat(currentPage)
+            pageScrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+        } else {
+            let tabBarVC = MainTabBarController()
+            tabBarVC.navigationItem.hidesBackButton = true
+            navigationController?.pushViewController(tabBarVC, animated: true)
         }
-        pageControl.currentPage = currentPage
-        let offsetX = view.frame.size.width * CGFloat(pageControl.currentPage)
-        pageScrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
     }
     
     private func configurePageScrollView() {
@@ -134,9 +132,6 @@ final class OnboardingViewController: UIViewController {
 extension OnboardingViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         pageControl.currentPage = Int(pageScrollView.contentOffset.x / view.frame.size.width)
+        currentPage = pageControl.currentPage
     }
 }
-
-
-
-

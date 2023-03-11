@@ -19,19 +19,28 @@ enum SortRecipe: String {
 enum CategoryRecipe: String {
     
     case mainСourse = "main_course"
-    case sideDish = "side_dish"
     case dessert = "dessert"
-    case bread = "bread"
-    case appetizer = "appetizer"
     case salad = "salad"
     case breakfast = "breakfast"
     case soup = "soup"
-    case beverage = "beverage"
-    case sauce = "sauce"
-    case marinade = "marinade"
-    case fingerfood = "fingerfood"
-    case snack = "snack"
     case drink = "drink"
+    
+    var title: String {
+        switch self {
+        case .mainСourse:
+            return "Main Course"
+        case .dessert:
+            return "Desserts"
+        case .salad:
+            return "Salads"
+        case .breakfast:
+            return "Breakfast"
+        case .soup:
+            return "Soups"
+        case .drink:
+            return "Drinks"
+        }
+    }
 }
 
 enum Diet: String {

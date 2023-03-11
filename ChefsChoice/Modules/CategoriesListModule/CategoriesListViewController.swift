@@ -8,19 +8,11 @@
 import UIKit
 
 class CategoriesListViewController: UIViewController {
-
+    
     //MARK: - Variables
     
     private let recipeModel: [RecipeModel]?
     private let recipeImages: [UIImage]?
-    
-    private let images: [UIImage] = [
-        UIImage(named: "4693469")!,
-        UIImage(named: "4693469")!,
-        UIImage(named: "4693469")!,
-        UIImage(named: "4693469")!,
-        UIImage(named: "4693469")!,
-    ]
     
     //MARK: - UI Components
     
@@ -29,13 +21,15 @@ class CategoriesListViewController: UIViewController {
         tableView.backgroundColor = .systemBackground
         tableView.allowsSelection = true
         tableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
-    init(model: [RecipeModel], recipeImage: [UIImage]?) {
+    init(model: [RecipeModel]?, recipeImage: [UIImage]?, title: String?) {
         self.recipeModel = model
         self.recipeImages = recipeImage
         super.init(nibName: nil, bundle: nil)
+        self.title = title
     }
     
     required init?(coder: NSCoder) {
@@ -45,23 +39,10 @@ class CategoriesListViewController: UIViewController {
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setupUI()
-        title = "Categories"
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-    }
-    //MARK: - Setup UI
-    private func setupUI() {
-        
-        self.view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        view.addSubview(tableView)
+        addConstraints()
+        tableView.delegate = self
+        tableView.dataSource = self
     }
 }
 
@@ -78,7 +59,7 @@ extension CategoriesListViewController: UITableViewDelegate, UITableViewDataSour
         }
         
         let recipe = recipeModel?[indexPath.row]
-                
+        
         guard let recipe = recipe else {
             return UITableViewCell()
         }
@@ -99,5 +80,18 @@ extension CategoriesListViewController: UITableViewDelegate, UITableViewDataSour
                 recipeModel: self.recipeModel?[indexPath.row])
             self.navigationController?.pushViewController(vc, animated: true)
         }
+    }
+}
+
+extension CategoriesListViewController {
+    private func addConstraints() {
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
 }
