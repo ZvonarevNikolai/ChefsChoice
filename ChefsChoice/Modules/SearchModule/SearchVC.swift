@@ -117,7 +117,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
                     self?.passedRecipes = success
                     self?.tableView.reloadData()
                 }
-            case .failure(let failure):
+            case .failure(_):
                 break
             }
             
@@ -408,7 +408,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
-            case .failure(let failure):
+            case .failure(_):
                 break
             }
             
@@ -420,7 +420,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
                 Rating: \(selectedRating)
                 Category: \(selectedCategory)
                 CookingTime: \(selectedTimeToCook)
-                Healthy: \(selectedDiet)
+                Healthy: \(String(describing: selectedDiet))
                 """)
         resetUI()
         // reset selectedValues

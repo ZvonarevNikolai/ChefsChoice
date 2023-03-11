@@ -55,16 +55,17 @@ class CategoryTableViewCell: UITableViewCell {
         recipeLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            recipeImageView.topAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.topAnchor),
-            recipeImageView.bottomAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.bottomAnchor),
-            recipeImageView.leadingAnchor.constraint(equalTo: self.contentView.layoutMarginsGuide.leadingAnchor),
-            recipeImageView.heightAnchor.constraint(equalToConstant: 90),
-            recipeImageView.widthAnchor.constraint(equalToConstant: 90),
+            recipeImageView.topAnchor.constraint(equalTo: topAnchor),
+            recipeImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            recipeImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            recipeImageView.widthAnchor.constraint(equalTo: recipeImageView.heightAnchor),
             
-            recipeLabel.leadingAnchor.constraint(equalTo: self.recipeImageView.trailingAnchor, constant: 16),
-            recipeLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -12),
-            recipeLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor),
-            recipeLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor)
+            recipeLabel.leadingAnchor.constraint(
+                equalTo: recipeImageView.trailingAnchor, constant: 16),
+            recipeLabel.trailingAnchor.constraint(
+                equalTo: trailingAnchor, constant: -16),
+            recipeLabel.topAnchor.constraint(equalTo: topAnchor),
+            recipeLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
     

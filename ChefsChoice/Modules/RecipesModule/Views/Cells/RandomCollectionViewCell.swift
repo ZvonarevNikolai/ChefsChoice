@@ -19,9 +19,19 @@ class RandomCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    private let recipeTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.numberOfLines = 2
+        label.backgroundColor = .systemGroupedBackground
+        label.alpha = 0.8
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupView()
         setConstraints()
     }
@@ -35,18 +45,35 @@ class RandomCollectionViewCell: UICollectionViewCell {
         clipsToBounds = true
         layer.cornerRadius = 2
         addSubview(randomRecipeImageView)
+        randomRecipeImageView.addSubview(recipeTitleLabel)
     }
     
     func addImageToCell(image: UIImage) {
         randomRecipeImageView.image = image
     }
     
+    func configureCell(recipe: RecipeModel) {
+        recipeTitleLabel.text = recipe.title
+    }
+    
     func setConstraints() {
         NSLayoutConstraint.activate([
-            randomRecipeImageView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
-            randomRecipeImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            randomRecipeImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            randomRecipeImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+            randomRecipeImageView.topAnchor.constraint(
+                equalTo: topAnchor, constant: 0),
+            randomRecipeImageView.leadingAnchor.constraint(
+                equalTo: leadingAnchor, constant: 0),
+            randomRecipeImageView.trailingAnchor.constraint(
+                equalTo: trailingAnchor, constant: 0),
+            randomRecipeImageView.bottomAnchor.constraint(
+                equalTo: bottomAnchor, constant: 0),
+            
+            recipeTitleLabel.topAnchor.constraint(
+                equalTo: randomRecipeImageView.topAnchor),
+            recipeTitleLabel.leadingAnchor.constraint(
+                equalTo: randomRecipeImageView.leadingAnchor),
+            recipeTitleLabel.trailingAnchor.constraint(
+                equalTo: randomRecipeImageView.trailingAnchor),
+            recipeTitleLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }

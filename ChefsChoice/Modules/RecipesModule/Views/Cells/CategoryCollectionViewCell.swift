@@ -23,8 +23,8 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "Category"
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

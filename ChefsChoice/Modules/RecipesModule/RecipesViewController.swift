@@ -1,12 +1,6 @@
-//
-//  RecipesViewController.swift
-//  ChefsChoice
-//
-//  Created by Nikolai Zvonarev on 01.03.2023.
-//
-
 import UIKit
 import ProgressHUD
+
 
 final class RecipesViewController: UIViewController {
     
@@ -14,7 +8,6 @@ final class RecipesViewController: UIViewController {
         let collectionViewLayout = UICollectionViewLayout()
         let collectionView = UICollectionView(
             frame: .zero, collectionViewLayout: collectionViewLayout)
-        collectionView.bounces = false
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
@@ -84,9 +77,9 @@ final class RecipesViewController: UIViewController {
     }
     
     private func setUpSearchBar() {
-            navigationItem.titleView = searchBar
-            navigationController?.navigationBar.tintColor = .systemBlue
-            searchBar.delegate = self
+        navigationItem.titleView = searchBar
+        navigationController?.navigationBar.tintColor = .label
+        searchBar.delegate = self
     }
     
     private func updateRecipes() {
@@ -142,6 +135,7 @@ extension RecipesViewController: UISearchBarDelegate {
             switch result {
             case .success(let recipes):
                 let categoriesVC = CategoriesListViewController(model: recipes, recipeImage: nil, title: text)
+                searchBar.text = nil
                 self.navigationController?.pushViewController(categoriesVC, animated: true)
             case .failure(_):
                 print("error")
@@ -195,7 +189,7 @@ extension RecipesViewController {
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
             widthDimension: .fractionalWidth(0.9),
-            heightDimension: .fractionalHeight(0.3)), subitems: [item])
+            heightDimension: .fractionalHeight(0.4)), subitems: [item])
         group.contentInsets.bottom = 16
         
         let section = createLayoutSection(
@@ -261,11 +255,9 @@ extension RecipesViewController: UICollectionViewDelegate {
         case .popular(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
             let detailVC = DetailViewController(recipeModel: recipe)
-            DispatchQueue.main.async {
-                self.navigationController?
-                    .pushViewController(detailVC, animated: true)
-                detailVC.configure(id: recipe.id)
-            }
+            self.navigationController?
+                .pushViewController(detailVC, animated: true)
+            detailVC.configure(id: recipe.id)
         case .category(_):
             let category = categoryRescipes[indexPath.row]
             dataManager?.fetchRecipe(category: category, sort: .random,
@@ -286,11 +278,9 @@ extension RecipesViewController: UICollectionViewDelegate {
         case .random(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
             let detailVC = DetailViewController(recipeModel: recipe)
-            DispatchQueue.main.async {
-                self.navigationController?
-                    .pushViewController(detailVC, animated: true)
-                detailVC.configure(id: recipe.id)
-            }
+            self.navigationController?
+                .pushViewController(detailVC, animated: true)
+            detailVC.configure(id: recipe.id)
         }
     }
 }
@@ -310,49 +300,50 @@ extension RecipesViewController: UICollectionViewDataSource {
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch sections[indexPath.section] {
-        case .popular(let popular):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: PopularCollectionViewCell.identifier,
-                for: indexPath) as? PopularCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            dataManager?.fetchImage(id: popularRecipes[indexPath.row].id,
-                                    size: .size556x370) { image in
-                DispatchQueue.main.async {
-                    cell.addImageToCell(image: image)
+            switch sections[indexPath.section] {
+            case .popular(let popular):
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: PopularCollectionViewCell.identifier,
+                    for: indexPath) as? PopularCollectionViewCell else {
+                    return UICollectionViewCell()
                 }
-            }
-            cell.configureCell(model: popular[indexPath.row])
-            return cell
-            
-        case .category(let category):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: CategoryCollectionViewCell.identifier,
-                for: indexPath) as? CategoryCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            
-            cell.configureCell(categoryName: category[indexPath.row].title,
-                               imageName: category[indexPath.row].image  ?? "" )
-            return cell
-            
-        case .random(_):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RandomCollectionViewCell.identifier,
-                for: indexPath) as? RandomCollectionViewCell
-            else {
-                return UICollectionViewCell()
-            }
-            dataManager?.fetchImage(id: randomRecipes[indexPath.row].id,
-                                    size: .size636x393) { image in
-                DispatchQueue.main.async {
-                    cell.addImageToCell(image: image)
+                dataManager?.fetchImage(id: popularRecipes[indexPath.row].id,
+                                        size: .size556x370) { image in
+                    DispatchQueue.main.async {
+                        cell.addImageToCell(image: image)
+                    }
                 }
+                cell.configureCell(model: popular[indexPath.row])
+                return cell
+                
+            case .category(let category):
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: CategoryCollectionViewCell.identifier,
+                    for: indexPath) as? CategoryCollectionViewCell else {
+                    return UICollectionViewCell()
+                }
+                
+                cell.configureCell(categoryName: category[indexPath.row].title,
+                                   imageName: category[indexPath.row].image  ?? "" )
+                return cell
+                
+            case .random(let random):
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: RandomCollectionViewCell.identifier,
+                    for: indexPath) as? RandomCollectionViewCell
+                else {
+                    return UICollectionViewCell()
+                }
+                dataManager?.fetchImage(id: randomRecipes[indexPath.row].id,
+                                        size: .size636x393) { image in
+                    DispatchQueue.main.async {
+                        cell.addImageToCell(image: image)
+                    }
+                }
+                cell.configureCell(recipe: random[indexPath.row])
+                return cell
             }
-            return cell
         }
-    }
     
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,

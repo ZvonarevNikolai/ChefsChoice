@@ -49,6 +49,10 @@ class CategoriesListViewController: UIViewController {
 // MARK: - UITableViewDelegate, UITableViewDataSource
 
 extension CategoriesListViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        90
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         recipeModel?.count ?? 0
     }
