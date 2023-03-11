@@ -63,7 +63,7 @@ struct RecipesManager {
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch"
 
 
-    let apiKey = "bb4af9d5996c41bbaf64ef62e24d4247"
+    let apiKey = "77a316e9a9754c2397f09560b7e77d90"
 
     
     let categories: [RecipeModel] = [
@@ -172,6 +172,23 @@ struct RecipesManager {
             }
         }
         task.resume()
+    }
+    
+    // MARK: - Ingredient
+    
+    func fetchIngredient(with id: Int, completion: @escaping ([Ingredient]) -> Void) {
+        guard let url = URL(string: "https://api.spoonacular.com/recipes/\(id)/ingredientWidget.json?apiKey=\(apiKey)") else {
+            return
+        }
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            guard error == nil, let data = data else { return }
+            do {
+                let decodedData = try JSONDecoder().decode(IngredientData.self, from: data)
+                completion(decodedData.ingredients)
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }.resume()
     }
     
     func parseJSON(_ recipes: Data, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {

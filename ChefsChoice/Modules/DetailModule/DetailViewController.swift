@@ -15,12 +15,13 @@ class DetailViewController: UIViewController {
     private var recipeModel: RecipeModel!
     private var context = CoreDataManager.shared.context
     private lazy var recipe = RecipeEntity(context: context)
-
+    private var ingredientsForRecipe: [Ingredient] = []
+    
     init(recipeModel: RecipeModel!, image: UIImage? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.recipeModel = recipeModel
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -91,6 +92,18 @@ class DetailViewController: UIViewController {
         return button
     }()
     
+    private lazy var ingredienButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Ingredient", for: .normal)
+        button.layer.cornerRadius = 8
+        button.backgroundColor = .white
+        button.setTitleColor(.black, for: .normal)
+        button.tag = 3
+        button.addTarget(self, action: #selector(showDetail), for: .touchUpInside)
+        return button
+    }()
+    
     private let headingStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -120,7 +133,7 @@ class DetailViewController: UIViewController {
             .replacingOccurrences(of: "</b>", with: "")
             .replacingOccurrences(of: "</a>", with: "")
             .replacingOccurrences(of: "a href=", with: "")
-
+        
         textView.dataDetectorTypes = .all
         return textView
     }()
@@ -132,6 +145,17 @@ class DetailViewController: UIViewController {
         scrollView.isHidden = true
         scrollView.showsHorizontalScrollIndicator = false
         return scrollView
+    }()
+    
+    private let ingredientTablewView: UITableView = {
+        let tablewView = UITableView()
+        tablewView.backgroundColor = .systemGroupedBackground
+        tablewView.isHidden = true
+        tablewView.register(
+            IngredientTableViewCell.self,
+            forCellReuseIdentifier: IngredientTableViewCell.identifier)
+        tablewView.translatesAutoresizingMaskIntoConstraints = false
+        return tablewView
     }()
     
     private lazy var titleLabel: UILabel = {
@@ -152,16 +176,25 @@ class DetailViewController: UIViewController {
         stackView.alignment = .leading
         return stackView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         stepsScrollView.delegate = self
+        ingredientTablewView.delegate = self
+        ingredientTablewView.dataSource = self
         view.backgroundColor = .white
         setupConstraints()
         addStepsModel()
         DispatchQueue.main.async {
             RecipesManager().fetchImage(id: self.recipeModel.id, size: .size556x370) { image in
                 self.photoImageView.image = image
+            }
+        }
+        RecipesManager().fetchIngredient(with: self.recipeModel.id) { ingredients in
+            self.ingredientsForRecipe = ingredients
+            
+            DispatchQueue.main.async {
+                self.ingredientTablewView.reloadData()
             }
         }
     }
@@ -176,17 +209,33 @@ class DetailViewController: UIViewController {
         case 1:
             informationButton.backgroundColor = .orange
             informationButton.setTitleColor(.white, for: .normal)
+            ingredienButton.backgroundColor = .white
             stepsButton.backgroundColor = .white
+            ingredienButton.setTitleColor(.black, for: .normal)
             stepsButton.setTitleColor(.black, for: .normal)
             informationTextView.isHidden = false
             stepsScrollView.isHidden = true
+            ingredientTablewView.isHidden = true
         case 2:
             informationButton.backgroundColor = .white
+            ingredienButton.backgroundColor = .white
             informationButton.setTitleColor(.black, for: .normal)
+            ingredienButton.setTitleColor(.black, for: .normal)
             stepsButton.backgroundColor = .orange
             stepsButton.setTitleColor(.white, for: .normal)
             informationTextView.isHidden = true
             stepsScrollView.isHidden = false
+            ingredientTablewView.isHidden = true
+        case 3:
+            ingredienButton.backgroundColor = .orange
+            ingredienButton.setTitleColor(.white, for: .normal)
+            stepsScrollView.isHidden = true
+            informationTextView.isHidden = true
+            ingredientTablewView.isHidden = false
+            informationButton.backgroundColor = .white
+            informationButton.setTitleColor(.black, for: .normal)
+            stepsButton.backgroundColor = .white
+            stepsButton.setTitleColor(.black, for: .normal)
         default:
             break
         }
@@ -230,7 +279,7 @@ class DetailViewController: UIViewController {
                         let data = image.jpegData(compressionQuality: .zero)
                         self.recipe.image = data
                     }
-                                        
+                    
                     for anal in self.recipeModel.analyzedInstructions ?? [] {
                         if let analized = NSEntityDescription.insertNewObject(forEntityName: "AnalyzedInstructionsEntity", into: self.context) as? AnalyzedInstructionsEntity {
                             
@@ -244,7 +293,7 @@ class DetailViewController: UIViewController {
                             self.recipe.addToAnalizedInstructions(analized)
                         }
                     }
-                                        
+                    
                     do {
                         try self.context.save()
                     } catch {
@@ -321,7 +370,7 @@ class DetailViewController: UIViewController {
             stepsStackView.addArrangedSubview(stepLabel)
         }
     }
-
+    
     private func setupConstraints() {
         view.addSubview(photoImageView)
         view.addSubview(minutesLabel)
@@ -329,16 +378,18 @@ class DetailViewController: UIViewController {
         headingView.addSubview(nameRecipeLabel)
         headingStackView.addArrangedSubview(informationButton)
         headingStackView.addArrangedSubview(stepsButton)
+        headingStackView.addArrangedSubview(ingredienButton)
         headingView.addSubview(headingStackView)
         headingView.addSubview(separatorView)
         headingView.addSubview(favoriteButton)
         view.addSubview(informationTextView)
         view.addSubview(stepsScrollView)
+        view.addSubview(ingredientTablewView)
         stepsScrollView.addSubview(stepsStackView)
         
         
         NSLayoutConstraint.activate([
-
+            
             photoImageView.topAnchor.constraint(equalTo: view.topAnchor),
             photoImageView.leftAnchor.constraint(equalTo: view.leftAnchor),
             photoImageView.rightAnchor.constraint(equalTo: view.rightAnchor),
@@ -376,6 +427,11 @@ class DetailViewController: UIViewController {
             stepsScrollView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
             stepsScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
+            ingredientTablewView.topAnchor.constraint(equalTo: headingView.bottomAnchor),
+            ingredientTablewView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
+            ingredientTablewView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            ingredientTablewView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
             stepsStackView.topAnchor.constraint(equalTo: stepsScrollView.topAnchor),
             stepsStackView.leftAnchor.constraint(equalTo: stepsScrollView.leftAnchor),
             stepsStackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
@@ -385,7 +441,23 @@ class DetailViewController: UIViewController {
             favoriteButton.centerXAnchor.constraint(equalTo: headingView.rightAnchor, constant: -60)
         ])
     }
+    
+}
 
+extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        ingredientsForRecipe.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: IngredientTableViewCell.identifier,
+            for: indexPath) as? IngredientTableViewCell else {
+            return UITableViewCell()
+        }
+        cell.configure(with: ingredientsForRecipe[indexPath.row])
+        return cell
+    }
 }
 
 extension DetailViewController: UIScrollViewDelegate {
@@ -395,5 +467,5 @@ extension DetailViewController: UIScrollViewDelegate {
             scrollView.contentOffset.x = 0
         }
     }
-
+    
 }
