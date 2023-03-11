@@ -13,6 +13,12 @@ final class IngredientTableViewCell: UITableViewCell {
         return label
     }()
     
+    var checked: Bool = false {
+        didSet {
+            accessoryType = checked ? .checkmark : .none
+        }
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview(ingredientLabel)

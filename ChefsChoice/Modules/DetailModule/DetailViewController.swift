@@ -445,6 +445,14 @@ class DetailViewController: UIViewController {
 }
 
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? IngredientTableViewCell else {
+            return
+        }
+        cell.checked.toggle()
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         ingredientsForRecipe.count
     }
