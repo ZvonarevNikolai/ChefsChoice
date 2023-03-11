@@ -103,6 +103,7 @@ class RecipeTableViewCell: UITableViewCell {
         configureRecipeNameLabel()
         
         cellStack.addArrangedSubview(recipeNameLabel)
+        cellStack.addSubview(cookingTimeCookLabel)
         
         cellStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

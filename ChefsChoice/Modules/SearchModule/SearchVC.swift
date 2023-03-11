@@ -63,38 +63,42 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
 //                                                    ]
     
     private let categoryItems = RecipesManager().categories
+//    private let categoryForAPI: [CategoryRecipe] = [
+//        .mainСourse, .soup, .breakfast, .salad, .dessert, .drink
+//    ]
     
     private var cookingTimeStack                   = UIStackView()
     private var cookingTitleLabel                  = UILabel()
     private var cookingTimeSlider                  = UISlider()
     private var cookingTimeLabel                   = UILabel()
-    private var minimumCookingTime: Float          = 10
-    private var maximumCookingTime: Float          = 100
+    private var minimumCookingTime: Float          = 15
+    private var maximumCookingTime: Float          = 400
     
     private var healthyTypeStackView               = UIStackView()
     private var healthyTypeTitleLabel              = UILabel()
-    private var healthyTypeTrueButton              = UIButton()
-    private var healthyTypeFalseButton             = UIButton()
+    private var dietKetoButton                     = UIButton()
+    private var dietVeganButton                    = UIButton()
     
     private var tableView                          = UITableView()
     
     
     //MARK: - Variables
     
+    var recipeManager                              = RecipesManager()
     var passedRecipes: [RecipeModel]?              = []
     
     // these vars and methods should be refactored into Model
     private var selectedRating: Int                = 0
     //private var selectedCategory: CategoryRecipe   = .dessert
-    private var selectedCategory: String           = ""
+    private var selectedCategory: CategoryRecipe   = .dessert
     private var selectedTimeToCook: Int            = 0
-    private var selectedHealthyType: Bool          = true
+    private var selectedDiet: Diet?
         
     //MARK: - VC LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         setupUI()
         
         tableView.delegate = self
@@ -103,6 +107,21 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         categoryGrid.dataSource = self
         categoryGrid.delegate = self
         navigationController?.navigationBar.isHidden = true
+        
+        
+        recipeManager.fetchRecipe(sort: .random) { [weak self] result in
+            
+            switch result {
+            case .success(let success):
+                DispatchQueue.main.async {
+                    self?.passedRecipes = success
+                    self?.tableView.reloadData()
+                }
+            case .failure(let failure):
+                break
+            }
+            
+        }
     }
     
     
@@ -137,7 +156,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     func resetUI() {
         ratingButtonArray.forEach{$0.setBackgroundImage(UIImage(systemName: "star"), for: .normal)}
         // no selection for cell
-        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{$0.backgroundColor = .clear}
+        [dietKetoButton, dietVeganButton].forEach{$0.backgroundColor = .clear}
     }
     
     // sets up main stack view
@@ -305,6 +324,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         cookingTimeSlider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
         cookingTimeSlider.minimumValue = minimumCookingTime
         cookingTimeSlider.maximumValue = maximumCookingTime
+        cookingTimeSlider.value = 80
     }
 
     func configureCookingTimeLabel(){
@@ -330,20 +350,20 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     }
 
     func configureHealthyTypeButtons() {
-        view.addSubview(healthyTypeTrueButton)
-        view.addSubview(healthyTypeFalseButton)
+        view.addSubview(dietKetoButton)
+        view.addSubview(dietVeganButton)
         
-        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{ button in
+        [dietKetoButton, dietVeganButton].forEach{ button in
             button.setTitleColor(.label, for: .normal)
-            button.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
+            button.addTarget(self, action: #selector(dietButtonTapped(_:)), for: .touchUpInside)
             button.layer.cornerRadius = 5
         }
         
-        healthyTypeTrueButton.setTitle("Healthy", for: .normal)
+        dietKetoButton.setTitle("Keto", for: .normal)
         //healthyTypeTrueButton.setTitleColor(.label, for: .normal)
-        healthyTypeTrueButton.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
+       // dietKetoButton.addTarget(self, action: #selector(dietButtonTapped(_:)), for: .touchUpInside)
         
-        healthyTypeFalseButton.setTitle("Not Healthy", for: .normal)
+        dietVeganButton.setTitle("Vegan", for: .normal)
         //healthyTypeFalseButton.setTitleColor(.label, for: .normal)
        // healthyTypeFalseButton.addTarget(self, action: #selector(healthyButtonTapped(_:)), for: .touchUpInside)
     }
@@ -359,7 +379,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         hStack.contentMode = .center
         hStack.spacing = 10
         hStack.distribution = .fillEqually
-        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{hStack.addArrangedSubview($0)}
+        [dietKetoButton, dietVeganButton].forEach{hStack.addArrangedSubview($0)}
         
         healthyTypeStackView.addArrangedSubview(healthyTypeTitleLabel)
         healthyTypeStackView.addArrangedSubview(hStack)
@@ -380,6 +400,19 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     @objc func applyButtonTapped() {
         hideShowFilterViews()
         
+        recipeManager.fetchRecipeFilter(category: selectedCategory, sort: .time, number: 100, maxReadyTime: selectedTimeToCook, diet: selectedDiet) { [weak self] result in
+            
+            switch result {
+            case .success(let success):
+                self?.passedRecipes = success
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            case .failure(let failure):
+                break
+            }
+            
+        }
         // add fetch request
         
         print("""
@@ -387,7 +420,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
                 Rating: \(selectedRating)
                 Category: \(selectedCategory)
                 CookingTime: \(selectedTimeToCook)
-                Healthy: \(selectedHealthyType)
+                Healthy: \(selectedDiet)
                 """)
         resetUI()
         // reset selectedValues
@@ -418,17 +451,18 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         
     }
     
-    @objc func healthyButtonTapped(_ sender: UIButton) {
-        [healthyTypeTrueButton, healthyTypeFalseButton].forEach{$0.isSelected = false}
+    @objc func dietButtonTapped(_ sender: UIButton) {
+        [dietKetoButton, dietVeganButton].forEach{$0.isSelected = false}
+        [dietKetoButton, dietVeganButton].forEach{$0.backgroundColor = .clear}
         
         sender.isSelected = true
-        if sender == healthyTypeTrueButton {
+        if sender == dietKetoButton {
             
-            sender.backgroundColor = .systemGreen
-            selectedHealthyType = true
+            sender.backgroundColor = .systemBlue
+            selectedDiet = .keto
         } else {
-            sender.backgroundColor = .systemRed
-            selectedHealthyType = false
+            sender.backgroundColor = .systemGreen
+            selectedDiet = .vegan
         }
         
     }
@@ -451,9 +485,17 @@ extension SearchVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? RecipeTableViewCell {
             
-            if let randomRecipes = passedRecipes {
+            if let trueRecipes = passedRecipes {
                 
-                cell.recipeNameLabel.text = randomRecipes[indexPath.row].title
+                cell.recipeNameLabel.text = trueRecipes[indexPath.row].title
+                let cookingTime = trueRecipes[indexPath.row].readyInMinutes
+                cell.cookingTimeCookLabel.text = String(cookingTime!)
+                
+                recipeManager.fetchImage(id: trueRecipes[indexPath.row].id, size: .size240x150) { image in
+                    DispatchQueue.main.async {
+                        cell.recipeImageView.image = image
+                    }
+                }
                 
                 return cell
             }
@@ -481,19 +523,16 @@ extension SearchVC: UITableViewDelegate, UITableViewDataSource {
             DispatchQueue.main.async {
                 self.navigationController?.pushViewController(detailVC, animated: true)
                 detailVC.configure(id: recipe.id)
+                
+                detailVC.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.dismissView))
+              //TODO: Figure out how to get back button
             }
         }
         
-
-//        let cell = tableView.cellForRow(at: indexPath) as? RecipeTableViewCell
-//        let recipe = cell?.passedRecipe
-//
-//        let detailVC = DetailViewController(recipeModel: recipe)
-//        DispatchQueue.main.async {
-//            self.navigationController?.pushViewController(detailVC, animated: true)
-//            //detailVC.configure(id: recipe.id)
-//            self.dismiss(animated: true)
-//        }
+    }
+    
+    @objc func dismissView() {
+        self.navigationController?.popViewController(animated: true)
     }
     
     func configureTableView() {
@@ -506,7 +545,7 @@ extension SearchVC: UITableViewDelegate, UITableViewDataSource {
         tableView.layer.borderWidth = 1
         tableView.layer.cornerRadius = 20
         tableView.layer.borderColor = UIColor.black.cgColor
-        tableView.backgroundColor = .cyan
+        //tableView.backgroundColor = .cyan
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -544,7 +583,12 @@ extension SearchVC: UICollectionViewDelegateFlowLayout, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCollectionViewCell {
             cell.layer.borderColor = UIColor.red.cgColor
-            selectedCategory = cell.getName().lowercased()
+            let categoryName = cell.getName().lowercased()
+            
+            let correctCategoryName = categoryName.replacingOccurrences(of: " ", with: "_")
+            selectedCategory = CategoryRecipe(rawValue: cell.getName().lowercased()) ?? .dessert
+            //selectedCategory = categoryForAPI[indexPath.row]
+           print(correctCategoryName)
         }
         collectionView.deselectItem(at: indexPath, animated: true)
     }
