@@ -153,7 +153,6 @@
 			isa = PBXGroup;
 			children = (
 				806BBF8429B0C67400243E32 /* Views */,
-				806BBF8329B0C66F00243E32 /* Controllers */,
 				80D3C1FD29B0C31600C3B171 /* MockData.swift */,
 				80D3C1FC29B0C31600C3B171 /* RecipesViewController.swift */,
 				80D3C1FE29B0C31600C3B171 /* SectionList.swift */,
@@ -195,13 +194,6 @@
 				806B326E29B10C2100B0DF56 /* DetailViewController.swift */,
 			);
 			path = DetailModule;
-			sourceTree = "<group>";
-		};
-		806BBF8329B0C66F00243E32 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Controllers;
 			sourceTree = "<group>";
 		};
 		806BBF8429B0C67400243E32 /* Views */ = {
