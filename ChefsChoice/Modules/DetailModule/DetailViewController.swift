@@ -15,8 +15,6 @@ class DetailViewController: UIViewController {
     private var recipeModel: RecipeModel!
     private var context = CoreDataManager.shared.context
     private lazy var recipe = RecipeEntity(context: context)
-    private lazy var analyzedInstructions = AnalyzedInstructionsEntity(context: context)
-        
 
     init(recipeModel: RecipeModel!, image: UIImage? = nil) {
         super.init(nibName: nil, bundle: nil)
@@ -37,7 +35,7 @@ class DetailViewController: UIViewController {
     private lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleToFill
         return imageView
     }()
     
@@ -74,7 +72,7 @@ class DetailViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Information", for: .normal)
         button.layer.cornerRadius = 8
-        button.backgroundColor = .gray
+        button.backgroundColor = .orange
         button.setTitleColor(.white, for: .normal)
         button.tag = 1
         button.addTarget(self, action: #selector(showDetail), for: .touchUpInside)
@@ -176,7 +174,7 @@ class DetailViewController: UIViewController {
     @objc private func showDetail(_ sender: UIButton) {
         switch sender.tag {
         case 1:
-            informationButton.backgroundColor = .gray
+            informationButton.backgroundColor = .orange
             informationButton.setTitleColor(.white, for: .normal)
             stepsButton.backgroundColor = .white
             stepsButton.setTitleColor(.black, for: .normal)
@@ -185,7 +183,7 @@ class DetailViewController: UIViewController {
         case 2:
             informationButton.backgroundColor = .white
             informationButton.setTitleColor(.black, for: .normal)
-            stepsButton.backgroundColor = .gray
+            stepsButton.backgroundColor = .orange
             stepsButton.setTitleColor(.white, for: .normal)
             informationTextView.isHidden = true
             stepsScrollView.isHidden = false
@@ -232,7 +230,21 @@ class DetailViewController: UIViewController {
                         let data = image.jpegData(compressionQuality: .zero)
                         self.recipe.image = data
                     }
-                    
+                                        
+                    for anal in self.recipeModel.analyzedInstructions ?? [] {
+                        if let analized = NSEntityDescription.insertNewObject(forEntityName: "AnalyzedInstructionsEntity", into: self.context) as? AnalyzedInstructionsEntity {
+                            
+                            for step1 in anal.steps {
+                                if let steps1 = NSEntityDescription.insertNewObject(forEntityName: "StepsEntity", into: self.context) as? StepsEntity {
+                                    steps1.step = step1.step
+                                    steps1.number = Int64(step1.number)
+                                    analized.addToSteps(steps1)
+                                }
+                            }
+                            self.recipe.addToAnalizedInstructions(analized)
+                        }
+                    }
+                                        
                     do {
                         try self.context.save()
                     } catch {
@@ -293,7 +305,7 @@ class DetailViewController: UIViewController {
             lazy var stepLabel: UILabel = {
                 let label = UILabel()
                 var ingridients: [String] = []
-                step.ingredients.forEach { ingridient in
+                step.ingredients?.forEach { ingridient in
                     ingridients.append(ingridient.name)
                 }
                 label.translatesAutoresizingMaskIntoConstraints = false
@@ -335,7 +347,7 @@ class DetailViewController: UIViewController {
             minutesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             minutesLabel.bottomAnchor.constraint(equalTo: headingView.topAnchor, constant: -20),
             
-            headingView.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -(1/4)*view.frame.width),
+            headingView.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -(1/5)*view.frame.width),
             headingView.leftAnchor.constraint(equalTo: view.leftAnchor),
             headingView.rightAnchor.constraint(equalTo: view.rightAnchor),
             headingView.heightAnchor.constraint(equalToConstant: 100),

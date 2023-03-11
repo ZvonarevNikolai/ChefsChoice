@@ -35,7 +35,7 @@ final class RecipesManager {
     
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch"
 
-    let apiKey = "c41c14ea1b8b4d03a6c2a4247e002a40"
+    let apiKey = "c632b0dfad414a67b0e28941a4a10fc9"
     
     let categories: [RecipeModel] = [
         .init(id: 0, title: "Desserts", image: "cupcake", preparationMinutes: 0,

@@ -30,8 +30,10 @@ class FavoriteDetailViewController: UIViewController {
     private lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(data: recipeModel.photo ?? Data()) 
+        imageView.contentMode = .scaleToFill
+        DispatchQueue.main.async {
+            imageView.image = UIImage(data: self.recipeModel.photo ?? Data())
+        }
         return imageView
     }()
     
@@ -68,7 +70,7 @@ class FavoriteDetailViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Information", for: .normal)
         button.layer.cornerRadius = 8
-        button.backgroundColor = .gray
+        button.backgroundColor = .orange
         button.setTitleColor(.white, for: .normal)
         button.tag = 1
         button.addTarget(self, action: #selector(showDetail), for: .touchUpInside)
@@ -166,7 +168,7 @@ class FavoriteDetailViewController: UIViewController {
     @objc private func showDetail(_ sender: UIButton) {
         switch sender.tag {
         case 1:
-            informationButton.backgroundColor = .gray
+            informationButton.backgroundColor = .orange
             informationButton.setTitleColor(.white, for: .normal)
             stepsButton.backgroundColor = .white
             stepsButton.setTitleColor(.black, for: .normal)
@@ -175,7 +177,7 @@ class FavoriteDetailViewController: UIViewController {
         case 2:
             informationButton.backgroundColor = .white
             informationButton.setTitleColor(.black, for: .normal)
-            stepsButton.backgroundColor = .gray
+            stepsButton.backgroundColor = .orange
             stepsButton.setTitleColor(.white, for: .normal)
             informationTextView.isHidden = true
             stepsScrollView.isHidden = false
@@ -275,7 +277,7 @@ class FavoriteDetailViewController: UIViewController {
             lazy var stepLabel: UILabel = {
                 let label = UILabel()
                 var ingridients: [String] = []
-                step.ingredients.forEach { ingridient in
+                step.ingredients?.forEach { ingridient in
                     ingridients.append(ingridient.name)
                 }
                 label.translatesAutoresizingMaskIntoConstraints = false
@@ -316,7 +318,7 @@ class FavoriteDetailViewController: UIViewController {
             minutesLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             minutesLabel.bottomAnchor.constraint(equalTo: headingView.topAnchor, constant: -20),
             
-            headingView.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -(1/4)*view.frame.width),
+            headingView.topAnchor.constraint(equalTo: photoImageView.bottomAnchor, constant: -(1/5)*view.frame.width),
             headingView.leftAnchor.constraint(equalTo: view.leftAnchor),
             headingView.rightAnchor.constraint(equalTo: view.rightAnchor),
             headingView.heightAnchor.constraint(equalToConstant: 100),
