@@ -36,7 +36,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     private var filterStackView                    = UIStackView()
     private var filterTitleButton                  = UIButton()
     private var filterStackIsHidden                = false
-    private var filterStackTopInset: CGFloat       = 20
+    private var filterStackTopInset: CGFloat       = 5
  
     private var ratingStackView                    = UIStackView()
     private var ratingTitleLabel                   = UILabel()
@@ -72,7 +72,8 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     private var cookingTimeSlider                  = UISlider()
     private var cookingTimeLabel                   = UILabel()
     private var minimumCookingTime: Float          = 15
-    private var maximumCookingTime: Float          = 400
+    private var maximumCookingTime: Float          = 175
+    private lazy var defaultCookingTime: Float     = { (maximumCookingTime - minimumCookingTime) / 2}()
     
     private var healthyTypeStackView               = UIStackView()
     private var healthyTypeTitleLabel              = UILabel()
@@ -89,9 +90,24 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     
     // these vars and methods should be refactored into Model
     private var selectedRating: Int                = 0
+    func translateToLikes(_ rating: Int) -> Set<Int> {
+        switch rating {
+        case 1: return Set(1...10)
+        case 2: return Set(11...100)
+        case 3: return Set(101...200)
+        case 4: return Set(201...500)
+        case 5: return Set(501...)
+        default: return Set(-1...0)
+        }
+    }
+    func resetFilterData() {
+        selectedRating = 0
+        selectedCategory = .dessert
+        selectedTimeToCook = Int(defaultCookingTime)
+    }
     //private var selectedCategory: CategoryRecipe   = .dessert
     private var selectedCategory: CategoryRecipe   = .dessert
-    private var selectedTimeToCook: Int            = 0
+    private lazy var selectedTimeToCook: Int       = Int(defaultCookingTime)
     private var selectedDiet: Diet?
         
     //MARK: - VC LifeCycle
@@ -131,7 +147,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
        
         view.backgroundColor = .systemBackground
         
-        let titleArray = [ratingTitleLabel: "by Rating", categoryTitleLabel: "by Category", cookingTitleLabel: "by Total Cooking Time", healthyTypeTitleLabel: "by Type"]
+        let titleArray = [ratingTitleLabel: "by Rating", categoryTitleLabel: "by Category", cookingTitleLabel: "by Total Cooking Time", healthyTypeTitleLabel: "by Diet"]
         
         for (key, value) in titleArray {
             configureTitleLabels(label: key, withTitle: value)
@@ -308,6 +324,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         view.addSubview(categoryStackView)
 
         categoryStackView.axis = .vertical
+        categoryStackView.spacing = 10
         categoryStackView.addArrangedSubview(categoryTitleLabel)
         categoryStackView.addArrangedSubview(categoryGrid)
 
@@ -324,7 +341,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         cookingTimeSlider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
         cookingTimeSlider.minimumValue = minimumCookingTime
         cookingTimeSlider.maximumValue = maximumCookingTime
-        cookingTimeSlider.value = 80
+        cookingTimeSlider.value = defaultCookingTime
     }
 
     func configureCookingTimeLabel(){
@@ -404,10 +421,19 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
             
             switch result {
             case .success(let success):
+                
                 self?.passedRecipes = success
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
+                
+                if self?.selectedRating ?? 0 > 0 {
+                    self?.passedRecipes = self?.passedRecipes?.filter({ [weak self] recipe in
+                        self!.translateToLikes(self!.selectedRating).contains(recipe.aggregateLikes!)
+                    })
                 }
+                
+//                DispatchQueue.main.async {
+//                    self?.tableView.reloadData()
+//                    
+//                }
             case .failure(let failure):
                 break
             }
@@ -423,6 +449,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
                 Healthy: \(selectedDiet)
                 """)
         resetUI()
+        resetFilterData()
         // reset selectedValues
         tableView.reloadData()
     }
@@ -430,14 +457,21 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
     @objc func hideShowFilterViews() {
         filterTitleButton.isUserInteractionEnabled.toggle()
         
-        UIView.animate(withDuration: 1, delay: 0.1) { [self] in
-            [ratingStackView, categoryStackView, cookingTimeStack, healthyTypeStackView].forEach {$0.isHidden.toggle()}
-            filterStackIsHidden.toggle()
-            
-            filterStackTopInset = filterStackIsHidden ? 0 : 20
-            filterStackView.layoutMargins = UIEdgeInsets(top: filterStackTopInset, left: 20, bottom: filterStackTopInset, right: 20)
-            
-        }
+        UIView.animateKeyframes(withDuration: 0.8, delay: 0.1, options: [], animations: { [weak self] in
+            var relativeStartTime = 0.00
+            [self!.ratingStackView, self!.categoryStackView, self!.cookingTimeStack, self!.healthyTypeStackView].forEach { stack in
+                
+                UIView.addKeyframe(withRelativeStartTime: relativeStartTime, relativeDuration: 0.5) {
+                    stack.isHidden.toggle()
+                    stack.layer.opacity = self!.filterStackIsHidden ? 1 : 0
+                    relativeStartTime += 0.33
+                }
+            }
+        })
+        // changes filterStack top and bottom insets
+        filterStackIsHidden.toggle()
+//        filterStackTopInset = filterStackIsHidden ? 0 : 20
+//        filterStackView.layoutMargins = UIEdgeInsets(top: filterStackTopInset, left: 20, bottom: filterStackTopInset, right: 20)
     }
     
     @objc func ratingButtonTapped(_ sender: UIButton){
@@ -466,7 +500,7 @@ class SearchVC: UIViewController, UIGestureRecognizerDelegate {
         }
         
     }
-  
+      
 }
 
 
@@ -483,19 +517,24 @@ extension SearchVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? RecipeTableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CategoryTableViewCell {
             
             if let trueRecipes = passedRecipes {
                 
-                cell.recipeNameLabel.text = trueRecipes[indexPath.row].title
-                let cookingTime = trueRecipes[indexPath.row].readyInMinutes
-                cell.cookingTimeCookLabel.text = String(cookingTime!)
+                let recipe = trueRecipes[indexPath.row]
+                
+                
+                //cell.recipeNameLabel.text = trueRecipes[indexPath.row].title
+                //let cookingTime = trueRecipes[indexPath.row].readyInMinutes
+                //cell.cookingTimeCookLabel.text = String(cookingTime!)
                 
                 recipeManager.fetchImage(id: trueRecipes[indexPath.row].id, size: .size240x150) { image in
                     DispatchQueue.main.async {
-                        cell.recipeImageView.image = image
+                        //cell.recipeImageView.image = image
+                        cell.updateImage(image: image)
                     }
                 }
+                cell.configure(model: recipe)
                 
                 return cell
             }
@@ -540,7 +579,7 @@ extension SearchVC: UITableViewDelegate, UITableViewDataSource {
         view.addSubview(tableView)
         
         tableView.largeContentTitle = "Search results"
-        tableView.register(RecipeTableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: "cell")
         
         tableView.layer.borderWidth = 1
         tableView.layer.cornerRadius = 20
