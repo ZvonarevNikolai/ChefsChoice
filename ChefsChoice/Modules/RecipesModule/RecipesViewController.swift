@@ -20,30 +20,45 @@ final class RecipesViewController: UIViewController {
         return collectionView
     }()
     
+    private let searchBar: UISearchBar = {
+        let bar = UISearchBar()
+        bar.placeholder = "Search recipe"
+        bar.layer.cornerRadius = 8
+        bar.layer.masksToBounds = true
+        return bar
+    }()
+    
     private var dataManager: RecipesManager?
     
     private var popularRecipes = [RecipeModel]()
-    private var categoryRecipes = [RecipeModel]()
+    private var categories = [RecipeModel]()
     private var randomRecipes = [RecipeModel]()
+    private var categoryRescipes: [CategoryRecipe] = [
+        .mainСourse, .soup, .breakfast, .salad, .dessert, .drink
+    ]
     
     private var sections: [SectionList] {
         [.popular(popularRecipes),
-         .category(categoryRecipes),
+         .category(categories),
          .random(randomRecipes)]
     }
+    
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setConstraints()
         setDelegates()
-        setUpNavBar()
+        setUpSearchBar()
         view.backgroundColor = .systemBackground
         dataManager = RecipesManager()
-        categoryRecipes = dataManager?.categories ?? []
+        categories = dataManager?.categories ?? []
         ProgressHUD.showSucceed()
         updateRecipes()
     }
+    
+    // MARK: - Appearance
     
     private func setupViews() {
         view.backgroundColor = .systemBackground
@@ -70,11 +85,10 @@ final class RecipesViewController: UIViewController {
         collectionView.dataSource = self
     }
     
-    private func setUpNavBar() {
-        let searchItem = UIBarButtonItem(
-            barButtonSystemItem: .search, target: self,
-            action: #selector(searhDidTap))
-        navigationItem.rightBarButtonItem = searchItem
+    private func setUpSearchBar() {
+            navigationItem.titleView = searchBar
+            navigationController?.navigationBar.tintColor = .systemBlue
+            searchBar.delegate = self
     }
     
     private func updateRecipes() {
@@ -106,12 +120,35 @@ final class RecipesViewController: UIViewController {
             }
         }
     }
+}
+
+extension RecipesViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Cancel", style: .done,
+            target: self, action: #selector(cancelButtonDidTap))
+    }
     
-    @objc private func searhDidTap() {
-        let searchController = SearchVC()
-        searchController.passedRecipes = sections[2].recipes
-        let navVC = UINavigationController(rootViewController: searchController)
-        present(navVC, animated: true)
+    @objc private func cancelButtonDidTap() {
+        searchBar.text = nil
+        navigationItem.rightBarButtonItem = nil
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        navigationItem.rightBarButtonItem = nil
+        guard let text = searchBar.text else { return }
+        
+        dataManager?.fetchRecipe(word: text, sort: .popularity,
+                                 completion: { result in
+            switch result {
+            case .success(let recipes):
+                print(recipes)
+            case .failure(_):
+                print("error")
+            }
+        })
+        searchBar.resignFirstResponder()
     }
 }
 
@@ -214,7 +251,6 @@ extension RecipesViewController {
               elementKind: UICollectionView.elementKindSectionHeader,
               alignment: .top)
     }
-    
 }
 
 //MARK: - UICollectionViewDelegate
@@ -225,43 +261,35 @@ extension RecipesViewController: UICollectionViewDelegate {
         switch sections[indexPath.section] {
         case .popular(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
-            
             let detailVC = DetailViewController(recipeModel: recipe)
             DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailVC,
-                                                              animated: true)
+                self.navigationController?
+                    .pushViewController(detailVC, animated: true)
                 detailVC.configure(id: recipe.id)
             }
         case .category(_):
-            switch indexPath.row {
-            case 0:
-                dataManager?.fetchRecipe(
-                    category: .dessert, sort: .random, number: 20,
-                    completion: { result in
-                        switch result {
-                        case .success(let success):
-                            DispatchQueue.main.async {
-                                let categoriesVC = CategoriesListViewController(
-                                    model: success, recipeImage: nil)
-                                self.navigationController?.pushViewController(
-                                    categoriesVC, animated: true)
-                            }
-                        case .failure(let failure):
-                            print(failure.localizedDescription)
-                        }
-                    })
-            case 1:
-                print("Soups")
-            default:
-                break
-            }
+            let category = categoryRescipes[indexPath.row]
+            dataManager?.fetchRecipe(category: category, sort: .random,
+                                     number: 20, completion: { result in
+                switch result {
+                case .success(let recipes):
+                    let categoryVC = CategoriesListViewController(
+                        model: recipes, recipeImage: nil)
+                    DispatchQueue.main.async {
+                        self.navigationController?
+                            .pushViewController(categoryVC, animated: true)
+                    }
+                case .failure(let failure):
+                    print(failure.localizedDescription)
+                }
+            })
             
         case .random(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
-            
             let detailVC = DetailViewController(recipeModel: recipe)
             DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailVC, animated: true)
+                self.navigationController?
+                    .pushViewController(detailVC, animated: true)
                 detailVC.configure(id: recipe.id)
             }
         }
@@ -275,11 +303,14 @@ extension RecipesViewController: UICollectionViewDataSource {
         sections.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
         sections[section].count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch sections[indexPath.section] {
         case .popular(let popular):
             guard let cell = collectionView.dequeueReusableCell(

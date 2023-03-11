@@ -34,6 +34,10 @@
 		80D3C20429B0C31600C3B171 /* RecipesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D3C1FC29B0C31600C3B171 /* RecipesViewController.swift */; };
 		80D3C20529B0C31600C3B171 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D3C1FD29B0C31600C3B171 /* MockData.swift */; };
 		80D3C20629B0C31600C3B171 /* SectionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D3C1FE29B0C31600C3B171 /* SectionList.swift */; };
+		C6D7B7A929BBAC9D00512ED7 /* ThirdPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7B7A629BBAC9D00512ED7 /* ThirdPageView.swift */; };
+		C6D7B7AA29BBAC9D00512ED7 /* FirstPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7B7A729BBAC9D00512ED7 /* FirstPageView.swift */; };
+		C6D7B7AB29BBAC9D00512ED7 /* SecondPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7B7A829BBAC9D00512ED7 /* SecondPageView.swift */; };
+		C6D7B7AE29BBAD1000512ED7 /* UIView + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D7B7AD29BBAD1000512ED7 /* UIView + Extension.swift */; };
 		E574DA6E29B7B37C00E89653 /* CategoriesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E574DA6D29B7B37C00E89653 /* CategoriesListViewController.swift */; };
 		E574DA7029B7BAAA00E89653 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E574DA6F29B7BAAA00E89653 /* CategoryTableViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -67,6 +71,10 @@
 		80D3C1FC29B0C31600C3B171 /* RecipesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesViewController.swift; sourceTree = "<group>"; };
 		80D3C1FD29B0C31600C3B171 /* MockData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		80D3C1FE29B0C31600C3B171 /* SectionList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionList.swift; sourceTree = "<group>"; };
+		C6D7B7A629BBAC9D00512ED7 /* ThirdPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThirdPageView.swift; sourceTree = "<group>"; };
+		C6D7B7A729BBAC9D00512ED7 /* FirstPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstPageView.swift; sourceTree = "<group>"; };
+		C6D7B7A829BBAC9D00512ED7 /* SecondPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondPageView.swift; sourceTree = "<group>"; };
+		C6D7B7AD29BBAD1000512ED7 /* UIView + Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView + Extension.swift"; sourceTree = "<group>"; };
 		E574DA6D29B7B37C00E89653 /* CategoriesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesListViewController.swift; sourceTree = "<group>"; };
 		E574DA6F29B7BAAA00E89653 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -175,6 +183,7 @@
 		806B326A29B10BDF00B0DF56 /* OnboardingModule */ = {
 			isa = PBXGroup;
 			children = (
+				C6D7B7A529BBAC9D00512ED7 /* Views */,
 				806B326C29B10C1000B0DF56 /* OnboardingViewController.swift */,
 			);
 			path = OnboardingModule;
@@ -271,6 +280,25 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		C6D7B7A529BBAC9D00512ED7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C6D7B7AC29BBAD1000512ED7 /* Extensions */,
+				C6D7B7A729BBAC9D00512ED7 /* FirstPageView.swift */,
+				C6D7B7A829BBAC9D00512ED7 /* SecondPageView.swift */,
+				C6D7B7A629BBAC9D00512ED7 /* ThirdPageView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C6D7B7AC29BBAD1000512ED7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				C6D7B7AD29BBAD1000512ED7 /* UIView + Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		E574DA6C29B7B33200E89653 /* CategoriesListModule */ = {
 			isa = PBXGroup;
 			children = (
@@ -361,6 +389,7 @@
 				80C5986E29ABF987007D1518 /* MainTabBarController.swift in Sources */,
 				28C5C5E629ADCBD700AAE23B /* CellForFavorite.swift in Sources */,
 				806B327329B113FD00B0DF56 /* RecipeTableViewCell.swift in Sources */,
+				C6D7B7AE29BBAD1000512ED7 /* UIView + Extension.swift in Sources */,
 				80D3C20629B0C31600C3B171 /* SectionList.swift in Sources */,
 				28C5C60F29ADF76200AAE23B /* ChefsChoice.xcdatamodeld in Sources */,
 				E574DA7029B7BAAA00E89653 /* CategoryTableViewCell.swift in Sources */,
@@ -371,7 +400,10 @@
 				806B326D29B10C1000B0DF56 /* OnboardingViewController.swift in Sources */,
 				28C5C61529AF6C8A00AAE23B /* RecipeEntity.swift in Sources */,
 				2875FF4729B0996D0082D183 /* RecipesData.swift in Sources */,
+				C6D7B7AB29BBAC9D00512ED7 /* SecondPageView.swift in Sources */,
 				80D3C1FF29B0C31600C3B171 /* CategoryCollectionViewCell.swift in Sources */,
+				C6D7B7A929BBAC9D00512ED7 /* ThirdPageView.swift in Sources */,
+				C6D7B7AA29BBAC9D00512ED7 /* FirstPageView.swift in Sources */,
 				806B326F29B10C2100B0DF56 /* DetailViewController.swift in Sources */,
 				80D3C20229B0C31600C3B171 /* HeaderSupplementaryView.swift in Sources */,
 				80C5986A29ABF987007D1518 /* AppDelegate.swift in Sources */,

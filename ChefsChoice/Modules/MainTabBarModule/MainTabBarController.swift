@@ -30,12 +30,12 @@ final class MainTabBarController: UITabBarController {
     private func createNavigationVC(
         rootVC: UIViewController, title: String,
         imageSystemName: String) -> UINavigationController {
-            rootVC.navigationItem.largeTitleDisplayMode = .automatic
             let navVC = UINavigationController(rootViewController: rootVC)
             navVC.tabBarItem.title = title
             navVC.title = title
             navVC.tabBarItem.image = UIImage(systemName: imageSystemName, withConfiguration: UIImage.SymbolConfiguration(weight: .semibold))
             navVC.navigationBar.prefersLargeTitles = true
+            navVC.navigationItem.largeTitleDisplayMode = .always
             navVC.navigationBar.tintColor = .label
             return navVC
         }

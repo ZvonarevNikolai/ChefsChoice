@@ -9,17 +9,32 @@ import Foundation
 import UIKit
 
 enum SortRecipe: String {
+    
     case popularity
     case random
+    
 }
 
 enum CategoryRecipe: String {
-    case pasta
-    case soup
-    case salad
-    case seafood
-    case steak
-    case dessert
+    
+    case mainСourse = "main_course"
+    case sideDish = "side_dish"
+    case dessert = "dessert"
+    case bread = "bread"
+    case appetizer = "appetizer"
+    case salad = "salad"
+    case breakfast = "breakfast"
+    case soup = "soup"
+    case beverage = "beverage"
+    case sauce = "sauce"
+    case marinade = "marinade"
+    case fingerfood = "fingerfood"
+    case snack = "snack"
+    case drink = "drink"
+}
+
+enum Diet: String {
+    case vegan = "vegan|vegetarian"
 }
 
 enum SizeImage: String {
@@ -29,34 +44,35 @@ enum SizeImage: String {
     case size480x360 = "480x360"
     case size556x370 = "556x370"
     case size636x393 = "636x393"
+    
 }
 
-final class RecipesManager {
+struct RecipesManager {
     
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch"
 
-    let apiKey = "c632b0dfad414a67b0e28941a4a10fc9"
+
+    let apiKey = "81f5b2f7f597449a81a5f627b0927794"
+
     
     let categories: [RecipeModel] = [
-        .init(id: 0, title: "Desserts", image: "cupcake", preparationMinutes: 0,
-              readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-        .init(id: 1, title: "Soups", image: "hot-soup", preparationMinutes: 0,
-              readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
-
-              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-        .init(id: 2, title: "Salads", image: "salad", preparationMinutes: 0,
-              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-        .init(id: 3, title: "Seafood", image: "seafood", preparationMinutes: 0,
-              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
-              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
-
-        .init(id: 4, title: "Spaghetti", image: "spaghetti",
+        .init(id: 4, title: "Main Course", image: "maincourse",
               preparationMinutes: 0, readyInMinutes: 0, veryHealthy: false,
               aggregateLikes: 0, servings: 0, analyzedInstructions: nil,
               summary: nil, photo: nil),
-        .init(id: 5, title: "Steak", image: "steak", preparationMinutes: 0,
+        .init(id: 1, title: "Soup", image: "hot-soup", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+        .init(id: 3, title: "Breakfast", image: "breakfast", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+        .init(id: 2, title: "Salad", image: "salad", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: true, aggregateLikes: 0,
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+        .init(id: 0, title: "Dessert", image: "cupcake", preparationMinutes: 0,
+              readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
+              servings: 0, analyzedInstructions: nil, summary: nil, photo: nil),
+        .init(id: 5, title: "Drink", image: "drink", preparationMinutes: 0,
               readyInMinutes: 0, veryHealthy: false, aggregateLikes: 0,
               servings: 0, analyzedInstructions: nil, summary: nil, photo: nil)
     ]
@@ -74,8 +90,33 @@ final class RecipesManager {
         }
     }
     
+    func fetchRecipe(word: String, sort: SortRecipe, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
+        let urlString = "\(recipeURL)?apiKey=\(apiKey)&query=\(word)&sort=\(sort.rawValue)&addRecipeInformation=true"
+        request(with: urlString) { recipeModel in
+            switch recipeModel {
+            case .success(let model):
+                completion(.success(model))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func fetchRecipeFilter(category: CategoryRecipe, sort: SortRecipe, number: Int, maxReadyTime: Int, diet: Diet, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
+        let urlString = "\(recipeURL)?apiKey=\(apiKey)&type=\(category.rawValue)&diet=\(diet.rawValue)&addRecipeInformation=true&sort=\(sort.rawValue)&maxReadyTime=\(maxReadyTime)&number=\(number)"
+        request(with: urlString) { recipeModel in
+            switch recipeModel {
+            case .success(let model):
+                completion(.success(model))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    
     func fetchRecipe(category: CategoryRecipe, sort: SortRecipe, number: Int, completion: @escaping (Result<[RecipeModel], Error>) -> Void) {
-        let urlString = "\(recipeURL)?apiKey=\(apiKey)&query=\(category.rawValue)&addRecipeInformation=true&sort=\(sort.rawValue)&number=\(number)"
+        let urlString = "\(recipeURL)?apiKey=\(apiKey)&type=\(category.rawValue)&addRecipeInformation=true&sort=\(sort.rawValue)&number=\(number)"
         request(with: urlString) { recipeModel in
             switch recipeModel {
             case .success(let model):
@@ -101,7 +142,6 @@ final class RecipesManager {
                 guard let data = data else { return }
                 self.parseJSON(data) { recipe in
                     switch recipe {
-                        
                     case .success(let model):
                         completion(.success(model))
                     case .failure(let error):
@@ -121,9 +161,8 @@ final class RecipesManager {
             let decodedData = try decoder.decode(RecipesData.self, from: recipes)
             
             var result = [RecipeModel]()
-            
+
             for object in decodedData.results {
-                
                 let recipe = RecipeModel(
                     id: object.id, title: object.title, image: object.image,
                     preparationMinutes: object.preparationMinutes,
@@ -132,8 +171,7 @@ final class RecipesManager {
                     aggregateLikes: object.aggregateLikes,
                     servings: object.servings,
                     analyzedInstructions: object.analyzedInstructions,
-                    summary: object.summary,
-                    photo: nil
+                    summary: object.summary, photo: nil
                 )
                 result.append(recipe)
             }
@@ -146,18 +184,18 @@ final class RecipesManager {
     }
     
     func fetchImage(id recipe: Int, size: SizeImage, completionHandler: @escaping (UIImage)->Void) {
-        let urlString = "https://spoonacular.com/recipeImages/\(recipe)-\(size.rawValue).jpg"
-        if let url = URL(string: urlString) {
-            
-            URLSession.shared.dataTask(with: url) { (data, response, error) in
-                if let data = data {
-                    DispatchQueue.main.async {
-                        if let image = UIImage(data: data) {
-                            completionHandler(image)
+            let urlString = "https://spoonacular.com/recipeImages/\(recipe)-\(size.rawValue).jpg"
+    
+            if let url = URL(string: urlString) {
+                URLSession.shared.dataTask(with: url) { (data, response, error) in
+                    if let data = data {
+                        DispatchQueue.main.async {
+                            if let image = UIImage(data: data) {
+                                completionHandler(image)
+                            }
                         }
                     }
-                }
-            }.resume()
+                }.resume()
+            }
         }
-    }
 }
