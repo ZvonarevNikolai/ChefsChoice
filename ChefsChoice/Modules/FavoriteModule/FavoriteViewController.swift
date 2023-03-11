@@ -29,6 +29,7 @@ class FavoriteViewController: UITableViewController {
     func fetchAllRecipes() {
             
             context.perform {
+                
                 let recipeEntities = try? RecipeEntity.allRecipesEntity(self.context)
                 
                 let dBRecipes = recipeEntities?.map({RecipeModel(

@@ -51,7 +51,9 @@ struct RecipesManager {
     
     let recipeURL = "https://api.spoonacular.com/recipes/complexSearch"
 
+
     let apiKey = "81f5b2f7f597449a81a5f627b0927794"
+
     
     let categories: [RecipeModel] = [
         .init(id: 4, title: "Main Course", image: "maincourse",

@@ -38,7 +38,7 @@ struct Steps: Codable {
     
     let number: Int
     let step: String
-    let ingredients: [Ingredients]
+    let ingredients: [Ingredients]?
     
 }
 

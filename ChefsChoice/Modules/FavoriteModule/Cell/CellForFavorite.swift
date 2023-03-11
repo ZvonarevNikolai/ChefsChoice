@@ -77,9 +77,9 @@ class CellForFavorite: UITableViewCell {
         cookingLabel.text = "Cooking time: \(recipeModel.readyInMinutes ?? 0) minutes"
         likesLabel.text = "Likes: \(recipeModel.aggregateLikes ?? 0)"
         
-        //DispatchQueue.main.async {
+        DispatchQueue.main.async {
             self.photoImageView.image = UIImage(data: recipeModel.photo ?? Data())
-        //}
+        }
     }
     
     override func prepareForReuse() {
