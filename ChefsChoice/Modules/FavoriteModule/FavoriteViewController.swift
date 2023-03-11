@@ -8,84 +8,72 @@
 import UIKit
 import CoreData
 
-struct testModel {
-    let title: String
-    let time: Int
-    let image: UIImage
-}
-
 class FavoriteViewController: UITableViewController {
     
-    var context: NSManagedObjectContext!
-    
-    var model: [testModel] = [
-        testModel(title: "Cannellini Bean and Asparagus Salad with Mushrooms", time: 25, image: UIImage(systemName: "birthday.cake") ?? UIImage()),
-        testModel(title: "Red Lentil Soup with Chicken and Turnips", time: 22, image: UIImage(systemName: "birthday.cake.fill") ?? UIImage()),
-        testModel(title: "Slow Cooker Beef Stew", time: 45, image: UIImage(systemName: "carrot.fill") ?? UIImage()),
-        testModel(title: "Chicken Fajita Stuffed Bell Pepper", time: 125, image: UIImage(systemName: "cup.and.saucer.fill") ?? UIImage()),
-        testModel(title: "Hummus and Za'atar", time: 7, image: UIImage(systemName: "takeoutbag.and.cup.and.straw") ?? UIImage()),
-    ]
+    private var context = CoreDataManager.shared.context
+    private var recipesModel: [RecipeModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        navigationController?.navigationBar.prefersLargeTitles = false
         tableView.register(CellForFavorite.self, forCellReuseIdentifier: "cell")
+        tableView.separatorStyle = .none
+        title = "Favorite"
+        self.fetchAllRecipes()
+    }
+    
+    func fetchAllRecipes() {
+            
+            context.perform {
+                
+                let recipeEntities = try? RecipeEntity.allRecipesEntity(self.context)
+                
+                let dBRecipes = recipeEntities?.map({RecipeModel(
+                    id: Int($0.id),
+                    title: $0.title ?? "",
+                    image: nil,
+                    preparationMinutes: nil,
+                    readyInMinutes: Int($0.readyInMinutes),
+                    veryHealthy: nil,
+                    aggregateLikes: Int($0.aggregateLikes),
+                    servings: Int($0.servings),
+                    analyzedInstructions: nil,
+                    summary: $0.summary,
+                    photo: $0.image)})
+                self.recipesModel = dBRecipes ?? []
+                self.tableView.reloadData()
+            }
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return model.count
+        return recipesModel.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CellForFavorite
-        let myModel = model[indexPath.row]
-        cell?.configureTest(myModel)
+        let myModel = recipesModel[indexPath.row]
+        cell?.configure(myModel)
         
         return cell ?? UITableViewCell()
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 400
+        return 370
     }
 
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            model.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let recipe = recipesModel[indexPath.row]
+        let detailVC = FavoriteDetailViewController(recipeModel: recipe, image: nil)
+        detailVC.recipeModel = recipe
+        DispatchQueue.main.async {
+            self.navigationController?.pushViewController(detailVC, animated: true)
         }
     }
-    
-    func saveContext() {
-        context.perform {
-            let recipe = RecipeEntity(context: self.context)
-            //recipe.title =
-        }
-    }
-    
-    func loadContext() {
-        let request: NSFetchRequest<RecipeEntity> = RecipeEntity.fetchRequest()
-
-        let recipe = try? context.fetch(request)
-    }
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
 }

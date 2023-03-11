@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22A400" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="RecipeEntity" representedClassName="RecipeEntity" syncable="YES" codeGenerationType="category">
+    <entity name="AnalyzedInstructionsEntity" representedClassName=".AnalyzedInstructionsEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="employee" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RecipeEntity" inverseName="analizedInstructions" inverseEntity="RecipeEntity"/>
+        <relationship name="steps" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StepsEntity" inverseName="employee" inverseEntity="StepsEntity"/>
+    </entity>
+    <entity name="IngredientsEntity" representedClassName=".IngredientsEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="employee" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StepsEntity" inverseName="ingredients" inverseEntity="StepsEntity"/>
+    </entity>
+    <entity name="RecipeEntity" representedClassName=".RecipeEntity" syncable="YES" codeGenerationType="category">
         <attribute name="aggregateLikes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="cookingMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="readyInMinutes" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="servings" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="analizedInstructions" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AnalyzedInstructionsEntity" inverseName="employee" inverseEntity="AnalyzedInstructionsEntity"/>
+    </entity>
+    <entity name="StepsEntity" representedClassName=".StepsEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="number" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="step" optional="YES" attributeType="String"/>
+        <relationship name="employee" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AnalyzedInstructionsEntity" inverseName="steps" inverseEntity="AnalyzedInstructionsEntity"/>
+        <relationship name="ingredients" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="IngredientsEntity" inverseName="employee" inverseEntity="IngredientsEntity"/>
     </entity>
 </model>

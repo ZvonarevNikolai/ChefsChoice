@@ -13,7 +13,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     
     private let categoryImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "categoryRecipe")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -23,22 +23,11 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "Category"
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    override var isSelected: Bool {
-        didSet {
-            if isSelected {
-                layer.borderWidth = 2
-                layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-            } else {
-                layer.borderWidth = 0
-            }
-        }
-    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -60,6 +49,10 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     func configureCell(categoryName: String, imageName: String) {
         categoryLabel.text = categoryName
         categoryImageView.image = UIImage(named: imageName)
+    }
+    
+    func getName() -> String {
+        return categoryLabel.text!
     }
     
     private func setConstraints() {

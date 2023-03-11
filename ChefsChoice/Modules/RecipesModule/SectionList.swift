@@ -8,21 +8,21 @@
 import Foundation
 
 enum SectionList {
-    case popular([ItemList])
-    case category([ItemList])
-    case random([ItemList])
+    case popular([RecipeModel])
+    case category([RecipeModel])
+    case random([RecipeModel])
     
-    var items: [ItemList] {
+    var recipes: [RecipeModel] {
         switch self {
-        case .popular(let items),
-                .category(let items),
-                .random(let items):
-            return items
+        case .popular(let recipes),
+                .category(let recipes),
+                .random(let recipes):
+            return recipes
         }
     }
     
     var count: Int {
-        items.count
+        recipes.count
     }
     
     var title: String {

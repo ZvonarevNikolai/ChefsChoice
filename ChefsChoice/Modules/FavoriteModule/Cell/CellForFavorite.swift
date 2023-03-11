@@ -18,22 +18,22 @@ class CellForFavorite: UITableViewCell {
         label.layer.masksToBounds = true
         label.layer.cornerRadius = 6
         label.textAlignment = .center
-        label.text = "Likes: 2034"
         return label
     }()
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textColor = .black
+        label.font = .systemFont(ofSize: 30, weight: .bold)
+        label.textColor = .white
         label.numberOfLines = 0
+        label.textAlignment = .left
         return label
     }()
     
     private lazy var cookingLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .bold)
-        label.textColor = .blue
+        label.textColor = .white
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
@@ -74,14 +74,12 @@ class CellForFavorite: UITableViewCell {
     
     func configure(_ recipeModel: RecipeModel) {
         titleLabel.text = recipeModel.title
-        cookingLabel.text = String(recipeModel.cookingMinutes)
-        //photoImageView.image = recipeModel
-    }
-    
-    func configureTest(_ testModel: testModel) {
-        titleLabel.text = testModel.title
-        cookingLabel.text = "Time for cooking:\n \(testModel.time) minutes"
-        photoImageView.image = testModel.image
+        cookingLabel.text = "Cooking time: \(recipeModel.readyInMinutes ?? 0) minutes"
+        likesLabel.text = "Likes: \(recipeModel.aggregateLikes ?? 0)"
+        
+        DispatchQueue.main.async {
+            self.photoImageView.image = UIImage(data: recipeModel.photo ?? Data())
+        }
     }
     
     override func prepareForReuse() {
@@ -105,17 +103,5 @@ class CellForFavorite: UITableViewCell {
             likesLabel.heightAnchor.constraint(equalToConstant: 30)
         ])
     }
-    
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        // Initialization code
-//    }
-//
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//
-//        // Configure the view for the selected state
-//    }
-
 }
 

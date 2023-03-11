@@ -55,8 +55,12 @@ final class PopularCollectionViewCell: UICollectionViewCell {
         addSubview(popularImageView)
     }
     
-    func configureCell(imageName: String) {
-        popularImageView.image = UIImage(named: imageName)
+    func configureCell(model: RecipeModel) {
+        titleLabel.text = model.title
+    }
+    
+    func addImageToCell(image: UIImage) {
+        popularImageView.image = image
     }
     
     func setConstraints() {
