@@ -4,14 +4,14 @@ final class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
         UserDefaults.standard.set(true, forKey: "isFirst")
         configureMainTabBar()
     }
     
     private func configureMainTabBar() {
         view.backgroundColor = .systemBackground
-        tabBar.tintColor = .black
+        tabBar.tintColor = .label
+        tabBar.backgroundColor = .systemBackground
         
         let recipesVC = createNavigationVC(
             rootVC: RecipesViewController(),

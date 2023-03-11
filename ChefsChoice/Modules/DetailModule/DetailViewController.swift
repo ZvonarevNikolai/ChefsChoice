@@ -62,6 +62,7 @@ class DetailViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 18, weight: .semibold)
         label.numberOfLines = 0
+        label.textColor = .black
         label.textAlignment = .center
         label.text = "\(recipeModel.title)"
         label.adjustsFontSizeToFitWidth = true
@@ -133,7 +134,7 @@ class DetailViewController: UIViewController {
             .replacingOccurrences(of: "</b>", with: "")
             .replacingOccurrences(of: "</a>", with: "")
             .replacingOccurrences(of: "a href=", with: "")
-        
+        textView.textColor = .black
         textView.dataDetectorTypes = .all
         return textView
     }()
@@ -149,7 +150,7 @@ class DetailViewController: UIViewController {
     
     private let ingredientTablewView: UITableView = {
         let tablewView = UITableView()
-        tablewView.backgroundColor = .systemGroupedBackground
+        tablewView.backgroundColor = .white
         tablewView.isHidden = true
         tablewView.register(
             IngredientTableViewCell.self,
@@ -160,6 +161,7 @@ class DetailViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 18, weight: .semibold)
         label.text = "Servings: \(recipeModel.servings ?? 0)\n\nCooking time: \(recipeModel.readyInMinutes ?? 0) minutes"
