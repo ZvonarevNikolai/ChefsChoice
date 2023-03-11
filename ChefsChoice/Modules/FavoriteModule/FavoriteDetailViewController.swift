@@ -31,9 +31,6 @@ class FavoriteDetailViewController: UIViewController {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleToFill
-        DispatchQueue.main.async {
-            imageView.image = UIImage(data: self.recipeModel.photo ?? Data())
-        }
         return imageView
     }()
     
@@ -41,13 +38,14 @@ class FavoriteDetailViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 18, weight: .semibold)
-        label.textColor = .white
+        label.textColor = .label
         label.text = "\(recipeModel.readyInMinutes ?? 0) minutes"
         return label
     }()
     
     private let headingView: UIView = {
         let view = UIView()
+        
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
         view.layer.cornerRadius = 26
@@ -56,6 +54,7 @@ class FavoriteDetailViewController: UIViewController {
     
     private lazy var nameRecipeLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 18, weight: .semibold)
         label.numberOfLines = 0
@@ -110,7 +109,8 @@ class FavoriteDetailViewController: UIViewController {
     private lazy var informationTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.backgroundColor = .white
+        textView.backgroundColor = .systemBackground
+        textView.textColor = .label
         textView.font = .systemFont(ofSize: 18)
         textView.isHidden = false
         textView.isEditable = false
@@ -134,6 +134,7 @@ class FavoriteDetailViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 18, weight: .semibold)
         label.text = "Servings: \(recipeModel.servings ?? 0)\n\nCooking time: \(recipeModel.readyInMinutes ?? 0) minutes"
@@ -155,9 +156,11 @@ class FavoriteDetailViewController: UIViewController {
         super.viewDidLoad()
         stepsScrollView.delegate = self
         view.backgroundColor = .white
-        
         setupConstraints()
         addStepsModel()
+        DispatchQueue.main.async {
+            self.photoImageView.image = UIImage(data: self.recipeModel.photo ?? Data())
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -281,6 +284,7 @@ class FavoriteDetailViewController: UIViewController {
                     ingridients.append(ingridient.name)
                 }
                 label.translatesAutoresizingMaskIntoConstraints = false
+                label.textColor = .label
                 label.font = .systemFont(ofSize: 18, weight: .medium)
                 let textLabel = NSMutableAttributedString(string: "Step: \(step.number)\n\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 20, weight: .semibold)])
                 textLabel.append(NSMutableAttributedString(string: "\(step.step)\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18)]))

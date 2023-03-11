@@ -17,6 +17,8 @@ class DetailViewController: UIViewController {
     private lazy var recipe = RecipeEntity(context: context)
     private var ingredientsForRecipe: [Ingredient] = []
     
+    // MARK: - Init
+    
     init(recipeModel: RecipeModel!, image: UIImage? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.recipeModel = recipeModel
@@ -25,6 +27,8 @@ class DetailViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - UI Constants
     
     private lazy var favoriteButton: UIButton = {
         let button = UIButton()
@@ -179,26 +183,17 @@ class DetailViewController: UIViewController {
         return stackView
     }()
     
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         stepsScrollView.delegate = self
         ingredientTablewView.delegate = self
         ingredientTablewView.dataSource = self
         view.backgroundColor = .white
+        updateData()
         setupConstraints()
         addStepsModel()
-        DispatchQueue.main.async {
-            RecipesManager().fetchImage(id: self.recipeModel.id, size: .size556x370) { image in
-                self.photoImageView.image = image
-            }
-        }
-        RecipesManager().fetchIngredient(with: self.recipeModel.id) { ingredients in
-            self.ingredientsForRecipe = ingredients
-            
-            DispatchQueue.main.async {
-                self.ingredientTablewView.reloadData()
-            }
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -258,6 +253,21 @@ class DetailViewController: UIViewController {
         } else {
             sender.setImage(UIImage(named: "notFavorite"), for: .normal)
             removeRecipe()
+        }
+    }
+    
+    private func updateData() {
+        DispatchQueue.main.async {
+            RecipesManager().fetchImage(id: self.recipeModel.id, size: .size556x370) { image in
+                self.photoImageView.image = image
+            }
+        }
+        RecipesManager().fetchIngredient(with: self.recipeModel.id) { ingredients in
+            self.ingredientsForRecipe = ingredients
+            
+            DispatchQueue.main.async {
+                self.ingredientTablewView.reloadData()
+            }
         }
     }
     
@@ -446,7 +456,13 @@ class DetailViewController: UIViewController {
     
 }
 
+// MARK: - UITableViewDelegate, UITableViewDataSource
+
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? IngredientTableViewCell else {
             return
@@ -477,5 +493,4 @@ extension DetailViewController: UIScrollViewDelegate {
             scrollView.contentOffset.x = 0
         }
     }
-    
 }

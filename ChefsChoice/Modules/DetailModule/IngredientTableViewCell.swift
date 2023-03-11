@@ -13,6 +13,15 @@ final class IngredientTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let amountLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textAlignment = .left
+        label.textColor = .darkGray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     var checked: Bool = false {
         didSet {
             accessoryType = checked ? .checkmark : .none
@@ -23,6 +32,7 @@ final class IngredientTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .white
         addSubview(ingredientLabel)
+        addSubview(amountLabel)
         addConstraints()
     }
     
@@ -31,15 +41,24 @@ final class IngredientTableViewCell: UITableViewCell {
     }
     
     func configure(with ingredient: Ingredient) {
-        ingredientLabel.text = ingredient.name
+        ingredientLabel.text = ingredient.name.capitalizingFirstLetter()
+        amountLabel.text = "\(ingredient.amount.metric.value)   \(ingredient.amount.metric.unit)"
     }
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            ingredientLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            ingredientLabel.topAnchor.constraint(
+                equalTo: topAnchor, constant: 4),
             ingredientLabel.leadingAnchor.constraint(
                 equalTo: leadingAnchor, constant: 8),
             ingredientLabel.trailingAnchor.constraint(
+                equalTo: trailingAnchor, constant: -8),
+            
+            amountLabel.topAnchor.constraint(
+                equalTo: ingredientLabel.bottomAnchor, constant: 8),
+            amountLabel.leadingAnchor.constraint(
+                equalTo: leadingAnchor, constant: 8),
+            amountLabel.trailingAnchor.constraint(
                 equalTo: trailingAnchor, constant: -8)
         ])
     }

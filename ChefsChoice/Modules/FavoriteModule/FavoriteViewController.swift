@@ -15,15 +15,11 @@ class FavoriteViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.prefersLargeTitles = false
         tableView.register(CellForFavorite.self, forCellReuseIdentifier: "cell")
         tableView.separatorStyle = .none
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         title = "Favorite"
-            self.fetchAllRecipes()
+        self.fetchAllRecipes()
     }
     
     func fetchAllRecipes() {
@@ -47,6 +43,10 @@ class FavoriteViewController: UITableViewController {
                 self.recipesModel = dBRecipes ?? []
                 self.tableView.reloadData()
             }
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 
     // MARK: - Table view data source
