@@ -2,7 +2,8 @@
 
 ## In this application you can find any recipe for cooking
 
-![Recipes](https://github.com/r-baranovskiy/ChefsChoice/blob/main/ReadmeResources/appMain.gif)
+<img src="Assets/appMain.gif" width="300">
+
 
 ## The user can:
 
