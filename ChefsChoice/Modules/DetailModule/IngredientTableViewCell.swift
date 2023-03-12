@@ -40,6 +40,12 @@ final class IngredientTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        ingredientLabel.text = nil
+        amountLabel.text = nil
+    }
+    
     func configure(with ingredient: Ingredient) {
         ingredientLabel.text = ingredient.name.capitalizingFirstLetter()
         amountLabel.text = "\(ingredient.amount.metric.value)   \(ingredient.amount.metric.unit)"

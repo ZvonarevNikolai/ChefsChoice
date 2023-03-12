@@ -1,10 +1,3 @@
-//
-//  CellForFavorite.swift
-//  ChefsChoice
-//
-//  Created by Дмитрий on 28.02.2023.
-//
-
 import UIKit
 
 class CellForFavorite: UITableViewCell {
@@ -84,6 +77,9 @@ class CellForFavorite: UITableViewCell {
     
     override func prepareForReuse() {
         photoImageView.image = nil
+        cookingLabel.text = nil
+        titleLabel.text = nil
+        likesLabel.text = nil
     }
     
     private func setupConstraints() {

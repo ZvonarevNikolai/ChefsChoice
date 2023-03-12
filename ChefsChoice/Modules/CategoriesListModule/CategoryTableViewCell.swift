@@ -1,10 +1,3 @@
-//
-//  CustomCell.swift
-//  ChefsChoice
-//
-//  Created by Nikolai Zvonarev on 07.03.2023.
-//
-
 import UIKit
 
 class CategoryTableViewCell: UITableViewCell {
@@ -37,6 +30,12 @@ class CategoryTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        recipeImageView.image = nil
+        recipeLabel.text = nil
     }
     
     public func configure(model: RecipeModel) {

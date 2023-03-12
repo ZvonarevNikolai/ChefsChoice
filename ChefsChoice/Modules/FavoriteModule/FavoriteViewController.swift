@@ -1,10 +1,3 @@
-//
-//  FavoriteViewController.swift
-//  ChefsChoice
-//
-//  Created by Дмитрий on 28.02.2023.
-//
-
 import UIKit
 import CoreData
 

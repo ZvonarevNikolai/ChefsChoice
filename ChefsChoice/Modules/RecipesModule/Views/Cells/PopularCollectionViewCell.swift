@@ -1,10 +1,3 @@
-//
-//  PopularCollectionViewCell.swift
-//  ChefsChoice
-//
-//  Created by Nikolai Zvonarev on 01.03.2023.
-//
-
 import UIKit
 
 final class PopularCollectionViewCell: UICollectionViewCell {
@@ -47,6 +40,12 @@ final class PopularCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been emplemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        popularImageView.image = nil
+        titleLabel.text = nil
     }
     
     func setupView() {
