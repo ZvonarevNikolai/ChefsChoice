@@ -46,7 +46,6 @@ final class RecipesViewController: UIViewController {
         setUpSearchBar()
         dataManager = RecipesManager()
         categories = dataManager?.categories ?? []
-        ProgressHUD.showSucceed()
         updateRecipes()
     }
     
@@ -86,10 +85,10 @@ final class RecipesViewController: UIViewController {
         dataManager?.fetchRecipe(sort: .popularity) { [weak self] result in
             switch result {
             case .success(let success):
-                ProgressHUD.dismiss()
                 self?.popularRecipes = success
                 DispatchQueue.main.async {
                     self?.collectionView.reloadData()
+                    ProgressHUD.showSucceed()
                 }
             case .failure(let failure):
                 ProgressHUD.dismiss()
@@ -110,6 +109,7 @@ final class RecipesViewController: UIViewController {
                 print(failure.localizedDescription)
             }
         }
+        ProgressHUD.dismiss()
     }
 }
 
