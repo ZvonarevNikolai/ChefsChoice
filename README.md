@@ -26,4 +26,7 @@
 
 - [Ruslan - Team Lead](https://github.com/r-baranovskiy)
 
+### All the data was taken from the API [spoonacular API](https://spoonacular.com/food-api)
+
+
 <img src="https://github.com/r-baranovskiy/ChefsChoice/blob/main/ReadmeResources/appOnboarding.gif" width="300">
