@@ -26,4 +26,4 @@
 
 - [Ruslan - Team Lead](https://github.com/r-baranovskiy)
 
-<img src="https://github.com/r-baranovskiy/ChefsChoice/blob/main/ReadmeResources/appMain.gif" width="300">
+<img src="https://github.com/r-baranovskiy/ChefsChoice/blob/main/ReadmeResources/appOnboarding.gif" width="300">
