@@ -19,6 +19,10 @@ class FavoriteViewController: UITableViewController {
         tableView.register(CellForFavorite.self, forCellReuseIdentifier: "cell")
         tableView.separatorStyle = .none
         title = "Favorite"
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.fetchAllRecipes()
     }
     
