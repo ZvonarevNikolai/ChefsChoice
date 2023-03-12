@@ -2,7 +2,7 @@
 
 ## In this application you can find any recipe for cooking
 
-![Recipes](https://github.com/r-baranovskiy/ChefsChoice/main/ReadmeResources/appMain.gif)
+![Recipes](https://github.com/r-baranovskiy/ChefsChoice/blob/main/ReadmeResources/appMain.gif)
 
 ## The user can:
 
@@ -14,7 +14,7 @@
 
 - Choose recipes from categories
 
-![Recipes](https://github.com/r-baranovskiy/ChefsChoice/main/ReadmeResources/appSearch.gif)
+![Recipes](https://github.com/r-baranovskiy/ChefsChoice/blob/main/ReadmeResources/appSearch.gif)
 
 ## Persons participated in the project:
 
@@ -26,4 +26,4 @@
 
 - [Ruslan - Team Lead](https://github.com/r-baranovskiy)
 
-![Recipes](https://github.com/r-baranovskiy/ChefsChoice/main/ReadmeResources/appOnboarding.gif)
+![Recipes](https://github.com/r-baranovskiy/ChefsChoice/blob/main/ReadmeResources/appOnboarding.gif)
