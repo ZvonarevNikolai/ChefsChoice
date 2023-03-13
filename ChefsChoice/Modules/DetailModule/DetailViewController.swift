@@ -1,12 +1,3 @@
-//
-//  DetailViewController.swift
-//  ChefsChoice
-//
-
-//  Created by Дмитрий on 02.03.2023.
-
-//
-
 import UIKit
 import CoreData
 

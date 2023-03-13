@@ -1,10 +1,3 @@
-//
-//  FavoriteViewController.swift
-//  ChefsChoice
-//
-//  Created by Дмитрий on 28.02.2023.
-//
-
 import UIKit
 import CoreData
 
@@ -19,6 +12,10 @@ class FavoriteViewController: UITableViewController {
         tableView.register(CellForFavorite.self, forCellReuseIdentifier: "cell")
         tableView.separatorStyle = .none
         title = "Favorite"
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.fetchAllRecipes()
     }
     

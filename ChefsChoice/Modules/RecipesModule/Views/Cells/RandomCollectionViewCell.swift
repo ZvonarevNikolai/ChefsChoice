@@ -1,13 +1,6 @@
-//
-//  RandomCollectionViewCell.swift
-//  ChefsChoice
-//
-//  Created by Nikolai Zvonarev on 01.03.2023.
-//
-
 import UIKit
 
-class RandomCollectionViewCell: UICollectionViewCell {
+final class RandomCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "RandomCollectionViewCell"
     
@@ -38,6 +31,12 @@ class RandomCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been emplemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        randomRecipeImageView.image = nil
+        recipeTitleLabel.text = nil
     }
     
     func setupView() {

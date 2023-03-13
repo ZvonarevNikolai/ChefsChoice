@@ -1,10 +1,3 @@
-//
-//  CategoryCollectionViewCell.swift
-//  ChefsChoice
-//
-//  Created by Nikolai Zvonarev on 01.03.2023.
-//
-
 import UIKit
 
 final class CategoryCollectionViewCell: UICollectionViewCell {
@@ -37,6 +30,12 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been emplemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        categoryLabel.text = nil
+        categoryImageView.image = nil
     }
     
     private func setupView() {
