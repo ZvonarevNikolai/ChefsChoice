@@ -251,6 +251,13 @@ extension RecipesViewController {
 extension RecipesViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
+        collectionView.cellForItem(at: indexPath)?
+            .isUserInteractionEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            collectionView.cellForItem(at: indexPath)?
+                .isUserInteractionEnabled = true
+        })
+        
         switch sections[indexPath.section] {
         case .popular(_):
             let recipe = sections[indexPath.section].recipes[indexPath.row]
